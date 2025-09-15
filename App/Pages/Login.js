@@ -1,28 +1,48 @@
 import React from 'react';
-import { View, Text, StyleSheet, ImageBackground,Button,TouchableOpacity,Alert } from 'react-native';
+import { View, Text, StyleSheet, ImageBackground, TouchableOpacity, Alert, Image } from 'react-native';
 
-const Login = () => {
-   const handlePress = () => {
-    Alert.alert("Button Pressed!", "You clicked the button.");
+const Login = ({navigation}) => {
+  const handlePress = (role) => {
+    Alert.alert("Selected Role", `You chose: ${role}`);
   };
+
   return (
     <View style={styles.container}>
+      {/* Background */}
       <ImageBackground
         source={require('../assets/bg.jpeg')} 
         style={styles.bgImage}
-        blurRadius={3}
+        blurRadius={1} // slight blur for a softer background
       />
-      <View style={styles.textContainer}>
-      <Text style={styles.topsub}>Login </Text>
-      
-        <TouchableOpacity style={styles.button}>
-          <Text style={styles.buttonText} onPress={handlePress}>   Citizen/नागरिक   </Text>
+
+      {/* Logo */}
+      <Image 
+        source={require('../assets/logo.png')} 
+        style={styles.logo}
+        resizeMode="contain"
+      />
+
+      {/* Translucent card */}
+      <View style={styles.card}>
+        <Text style={styles.topsub}>Login as</Text>
+
+        <TouchableOpacity 
+          style={styles.button} 
+          onPress={() => navigation.navigate('CitizenLogin')}
+        >
+          <Text style={styles.buttonText}>Citizen / नागरिक</Text>
         </TouchableOpacity>
-        <TouchableOpacity style={styles.button} >
-          <Text style={styles.buttonText} onPress={handlePress}>Employee/कर्मचारी</Text>
+
+        <TouchableOpacity 
+          style={styles.button} 
+          onPress={() => navigation.navigate('EmployeeLogin')}
+        >
+          <Text style={styles.buttonText}>Employee / कर्मचारी</Text>
         </TouchableOpacity>
       </View>
-    <Text style={styles.bottomTxt}>powered by GenEva</Text>
+
+      {/* Footer */}
+      <Text style={styles.bottomTxt}>powered by GenEva</Text>
     </View>
   );
 };
@@ -37,50 +57,67 @@ const styles = StyleSheet.create({
   bgImage: {
     width: '100%',
     height: '100%',
-    position: 'absolute', // makes it behave like a background
+    position: 'absolute',
   },
-  textContainer:{
-    marginTop: 40, // pushes both texts down together
-    marginBottom:60,
+  logo: {
+    width: 200,
+    height: 200,
+    marginTop: -220,  // pull logo upward
+    marginBottom: 50, // space between logo & card
+  },
+  topsub: {
+    color: "#000",
+    fontSize: 22,
+    marginTop: 10,
+    marginBottom: 20,
+    fontWeight: "bold",
+  },
+  card: {
+    backgroundColor: 'rgba(255, 255, 255, 0.6)', 
+    borderRadius: 20,
+    paddingVertical: 25,
+    paddingHorizontal: 30,
     alignItems: 'center',
 
-  },
-  top:{
-  color: "#000",
-    fontSize: 35,
-    fontWeight: "bold",
-  },
-  topsub:{
-    color: "#fff",
-    fontSize: 20,
-    marginTop: 20, // space between City Sync & You are a
-    fontWeight:"bold",
+    // Shadow
+    elevation: 0, 
+    shadowColor: '#000',
+    shadowOpacity: 0.15,
+    shadowRadius: 6,
+
+    // Border
+    borderWidth: 1.5,
+    borderColor: "#1A237E",
   },
   button: {
-    marginTop: 20,
-    backgroundColor: "#fff", // White button
+    marginTop: 15,
+    backgroundColor: "#fff",
     paddingVertical: 12,
     paddingHorizontal: 30,
-    borderRadius: 25, // Rounded edges
-    borderWidth: 1.5,           // 🔹 added border width
-    borderColor: "#1A237E",   // 🔹 same as text color
-    elevation:50,
+    borderRadius: 25,
+    borderWidth: 1.5,
+    borderColor: "#1A237E",
+    width: 220,
+    alignItems: "center",
+
+    // Shadow
+    elevation: 3,
+    shadowColor: "#000",
+    shadowOpacity: 0.15,
+    shadowRadius: 4,
   },
   buttonText: {
-    color: "#1A237E", // Blue text
+    color: "#1A237E",
     fontSize: 18,
     fontWeight: "bold",
-    paddingLeft:35,
-    paddingRight:35,
   },
-  bottomTxt:{
-  position: "absolute",
-  bottom: 35,          // distance from bottom of the screen
-  color: "#fff",       // make it visible on bg
-  fontSize: 14,
-  fontWeight: "600",
+  bottomTxt: {
+    position: "absolute",
+    bottom: 50,
+    color: "#fff",
+    fontSize: 13,
+    fontWeight: "600",
   },
-  
 });
 
 export default Login;
