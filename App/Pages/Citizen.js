@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 
-const Citizen = () => {
+const Citizen = ({navigation}) => {
   const [isPhoneLogin, setIsPhoneLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -125,7 +125,7 @@ const Citizen = () => {
         </View>
 
         {/* Login Button */}
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+        <TouchableOpacity style={styles.loginButton} onPress={() => {navigation.navigate('CitizenHome');handleLogin;}}>
           <Text style={styles.loginText}>Login</Text>
         </TouchableOpacity>
 

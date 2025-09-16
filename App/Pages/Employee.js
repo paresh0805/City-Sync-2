@@ -14,7 +14,7 @@ import { SafeAreaView } from "react-native-safe-area-context"; // ✅ new import
 import { FontAwesome } from "@expo/vector-icons";
 import DropDownPicker from "react-native-dropdown-picker";
 
-const Employee = () => {
+const Employee = ({navigation}) => {
   const [isPhoneLogin, setIsPhoneLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -168,7 +168,7 @@ const Employee = () => {
             />
 
             {/* Login Button */}
-            <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+            <TouchableOpacity style={styles.loginButton} onPress={()=>{navigation.navigate("EmployeeHome"); handleLogin;}}>
               <Text style={styles.loginText}>Login</Text>
             </TouchableOpacity>
 
