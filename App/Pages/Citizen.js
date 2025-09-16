@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   ImageBackground,
-  Platform,
+  Platform,Alert,
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 
@@ -19,34 +19,39 @@ const Citizen = ({navigation}) => {
 
   const handleLogin = async () => {
     try {
+      if (
+            (isPhoneLogin && !phone) ||
+            (!isPhoneLogin && !email) ||
+            !password
+          ) {
+            Alert.alert("Error", "All fields are required");
+            return;
+          }
       // Choose payload based on toggle
       const payload = isPhoneLogin
         ? { phone, password }
         : { email, password };
 
-      const response = await fetch("https://server1-production-7ec8.up.railway.app/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-
-        body: JSON.stringify(payload),
-        
-        
-        
-      });
-
-      const data = await response.json();
-
-      if (response.ok) {
-        Alert.alert("Login Successful", JSON.stringify(data));
-        // Navigate to next screen here if using react-navigation
-      } else {
-        Alert.alert("Login Failed", data.message || "Invalid credentials");
-      }
-    } catch (error) {
-      Alert.alert("Error", error.message);
-    }
+      const response = await fetch(
+            "https://web-production-ff28.up.railway.app/login",
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(payload),
+            }
+          );
+      
+          const result = await response.json();
+      
+          if (result.success) {
+            navigation.navigate("CitizenHome"); // ✅ success → next page
+          } else {
+            Alert.alert("Login Failed", result.message || "Invalid credentials");
+          }
+        } catch (error) {
+          console.error(error);
+          Alert.alert("Error", "Something went wrong");
+        }
   };
 
 
@@ -125,7 +130,7 @@ const Citizen = ({navigation}) => {
         </View>
 
         {/* Login Button */}
-        <TouchableOpacity style={styles.loginButton} onPress={() => {navigation.navigate('CitizenHome');handleLogin;}}>
+        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
           <Text style={styles.loginText}>Login</Text>
         </TouchableOpacity>
 
