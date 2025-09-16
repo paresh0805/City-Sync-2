@@ -30,47 +30,43 @@ const Employee = ({navigation}) => {
   ]);
 
   const handleLogin = async () => {
-    try {
-      if (
-        (isPhoneLogin && !phone) ||
-        (!isPhoneLogin && !email) ||
-        !password ||
-        !department
-      ) {
-        Alert.alert("Error", "All fields are required");
-        return;
-      }
-
-      const payload = isPhoneLogin
-        ? { phone, password, department }
-        : { email, password, department };
-
-      const response = await fetch(
-        "https://server1-production-7ec8.up.railway.app/login",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(payload),
-        }
-      );
-
-      const text = await response.text();
-      let data;
-      try {
-        data = JSON.parse(text);
-      } catch {
-        data = { message: text };
-      }
-
-      if (response.ok) {
-        Alert.alert("Login Successful", JSON.stringify(data));
-      } else {
-        Alert.alert("Login Failed", data.message || "Invalid credentials");
-      }
-    } catch (error) {
-      Alert.alert("Error", error.message);
+  try {
+    if (
+      (isPhoneLogin && !phone) ||
+      (!isPhoneLogin && !email) ||
+      !password ||
+      !department
+    ) {
+      Alert.alert("Error", "All fields are required");
+      return;
     }
-  };
+
+    const payload = isPhoneLogin
+      ? { phone, password, department }
+      : { email, password, department };
+
+    const response = await fetch(
+      "https://web-production-ff28.up.railway.app/login",
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload),
+      }
+    );
+
+    const result = await response.json();
+
+    if (result.success) {
+      navigation.navigate("EmployeeHome"); // ✅ success → next page
+    } else {
+      Alert.alert("Login Failed", result.message || "Invalid credentials");
+    }
+  } catch (error) {
+    console.error(error);
+    Alert.alert("Error", "Something went wrong");
+  }
+};
+
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -168,7 +164,7 @@ const Employee = ({navigation}) => {
             />
 
             {/* Login Button */}
-            <TouchableOpacity style={styles.loginButton} onPress={()=>{navigation.navigate("EmployeeHome"); handleLogin;}}>
+            <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
               <Text style={styles.loginText}>Login</Text>
             </TouchableOpacity>
 
