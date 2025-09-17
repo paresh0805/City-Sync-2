@@ -60,15 +60,61 @@ export default function ReportNewIssue() {
     }
   };
 
-  const handleSubmit = () => {
-    console.log({
-      issueType,
-      description,
-      location,
-      image,
+  const handleSubmit = async () => {
+  if (!issueType || !description || !location || !image) {
+    alert("Please fill all fields and add an image!");
+    return;
+  }
+
+  let formData = new FormData();
+  formData.append("description", description);
+  formData.append("location", location);
+  formData.append("citizenId", "12345"); // 🔹 Replace with actual logged-in user ID
+  formData.append("issueType", issueType); // optional, add if you want
+
+  formData.append("image", {
+    uri: image,
+    name: "report.jpg",
+    type: "image/jpeg",
+  });
+
+  try {
+    const response = await fetch("http://<your-ip>:5000/issue", {
+      method: "POST",
+      body: formData,
+      headers: {
+        "Content-Type": "multipart/form-data", 
+      },
     });
-    alert("Report Submitted!");
-  };
+
+    const text = await response.text();
+    console.log("📩 Raw server response:", text);
+
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (err) {
+      throw new Error("Server did not return JSON");
+    }
+
+    if (response.ok && data.success) {
+      alert("✅ Issue reported successfully!");
+      console.log("Server response:", data);
+
+      // Clear form
+      setIssueType("");
+      setDescription("");
+      setImage(null);
+    } else {
+      alert("❌ Failed: " + (data.message || "Unknown error"));
+    }
+  } catch (error) {
+    console.error("Error submitting report:", error);
+    alert("Something went wrong. Please try again.");
+  }
+};
+
+
 
   return (
     <ScrollView style={styles.container}>
