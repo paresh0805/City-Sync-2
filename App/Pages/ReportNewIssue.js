@@ -79,12 +79,10 @@ export default function ReportNewIssue() {
   });
 
   try {
-    const response = await fetch("http://<your-ip>:5000/issue", {
+    const response = await fetch("https://backend-production-e436.up.railway.app/issue", {
       method: "POST",
       body: formData,
-      headers: {
-        "Content-Type": "multipart/form-data", 
-      },
+      
     });
 
     const text = await response.text();

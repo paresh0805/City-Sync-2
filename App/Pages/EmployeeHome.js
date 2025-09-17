@@ -9,35 +9,35 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FontAwesome } from "@expo/vector-icons";
 import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
-import { MaterialIcons } from "@expo/vector-icons";
 
 const user = {
   name: "Vansh Kapila",
   id: "CIT-2024-1043",
   performancePoints: 850,
+  assigned: 5,
+  completed: 12,
+  workingOn: 1,
 };
 
-// Current civic issue
 const currentProblem = {
   id: "CIV-2024-0892",
   title: "Potholes on Main Street",
-  description: "Large potholes causing traffic disruptions and vehicle damage.",
+  lastUpdate: "Issue flagged to maintenance team. Awaiting response.",
   priority: "High",
   category: "Roads",
   workingFor: "3h 15m",
 };
 
-// Assigned issues
 const assignedProblems = [
   { id: "CIV-2024-0892", title: "Potholes on Main Street", priority: "High" },
   { id: "CIV-2024-0891", title: "Streetlight not working in Sector 9", priority: "Medium" },
   { id: "CIV-2024-0890", title: "Overflowing garbage bins", priority: "High" },
   { id: "CIV-2024-0889", title: "Water leakage near park", priority: "Low" },
+  { id: "CIV-2024-0888", title: "Broken sidewalk in Sector 4", priority: "Medium" },
 ];
 
-// Department grid with valid icons
 const departments = [
-  { name: "Roads", icon: "road", color: "#CCE5FF" },
+  { name: "Roads", icon: "road-variant", color: "#CCE5FF" },
   { name: "Electricity", icon: "lightbulb-on-outline", color: "#F2E6FF" },
   { name: "Sanitation", icon: "delete", color: "#D9F2E6" },
   { name: "Buildings", icon: "office-building", color: "#FFE6CC" },
@@ -52,16 +52,17 @@ const priorityColors = {
 };
 
 export default function EmployeeHome() {
+  const shortId = (fullId) => fullId.slice(-4);
+
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: "#FFF" }}>
       <ScrollView style={styles.container}>
         {/* User Info */}
-        <View style={styles.userCard}>
-          <View style={styles.userIcon}>
-            <FontAwesome name="user" size={40} color="#1E40AF" />
+        <View style={[styles.userCard, styles.blueBorder]}>
+          <View style={styles.userHeaderRow}>
+            <Text style={styles.userName}>{user.name}</Text>
+            <Text style={styles.userId}>{user.id}</Text>
           </View>
-          <Text style={styles.userName}>{user.name}</Text>
-          <Text style={styles.userId}>{user.id}</Text>
 
           <View style={styles.performanceBox}>
             <Text style={{ fontWeight: "600" }}>Performance Points</Text>
@@ -69,92 +70,111 @@ export default function EmployeeHome() {
               <Text style={{ color: "white" }}>{user.performancePoints} pts</Text>
             </View>
           </View>
+
+          <View style={styles.statsRow}>
+            <View style={styles.statBox}>
+              <Text style={styles.statNumber}>{user.assigned}</Text>
+              <Text style={styles.statLabel}>Assigned</Text>
+            </View>
+            <View style={styles.statBox}>
+              <Text style={styles.statNumber}>{user.completed}</Text>
+              <Text style={styles.statLabel}>Completed</Text>
+            </View>
+            <View style={styles.statBox}>
+              <Text style={styles.statNumber}>{user.workingOn}</Text>
+              <Text style={styles.statLabel}>Working On</Text>
+            </View>
+          </View>
         </View>
 
-        {/* Current Problem */}
-        <View style={styles.card}>
-          <View style={styles.cardHeader}>
-            <MaterialIcons name="error-outline" size={20} color="#1E40AF" />
-            <Text style={[styles.cardHeaderText, { marginLeft: 6 }]}>
-              Current Civic Issue
-            </Text>
+        {/* Currently Working On */}
+        <View style={[styles.cardBordered, styles.blueBorder]}>
+          <View style={styles.cardHeaderVisual}>
+            <Text style={styles.cardHeaderTextVisual}>📝 Currently Working On</Text>
           </View>
 
-          <Text style={styles.problemId}>Issue ID: {currentProblem.id}</Text>
-          <Text style={styles.problemTitle}>{currentProblem.title}</Text>
-          <Text style={styles.problemDescription}>{currentProblem.description}</Text>
+          <View style={styles.infoRow}>
+            <Text style={styles.label}>Issue ID:</Text>
+            <Text style={styles.value}>{shortId(currentProblem.id)}</Text>
+          </View>
 
-          <View style={styles.problemTagsRow}>
+          <View style={styles.infoRow}>
+            <Text style={styles.label}>Title:</Text>
+            <Text style={[styles.value, { flex: 1 }]}>{currentProblem.title}</Text>
+          </View>
+
+          <View style={styles.infoRow}>
+            <Text style={styles.label}>Last Update:</Text>
+            <Text style={[styles.value, { flex: 1 }]}>{currentProblem.lastUpdate}</Text>
+          </View>
+
+          <View style={styles.tagRow}>
             <View
               style={[
                 styles.priorityTag,
                 { backgroundColor: priorityColors[currentProblem.priority] },
               ]}
             >
-              <Text style={{ fontWeight: "600" }}>{currentProblem.priority}</Text>
+              <Text style={{ fontWeight: "600", color: "#FFF" }}>
+                {currentProblem.priority}
+              </Text>
             </View>
             <View style={styles.categoryTag}>
-              <Text style={{ fontWeight: "600" }}>{currentProblem.category}</Text>
+              <Text style={{ fontWeight: "600", color: "#1E3A8A" }}>
+                {currentProblem.category}
+              </Text>
             </View>
-            <Text style={{ color: "#444" }}>
-              Working for: {currentProblem.workingFor}
-            </Text>
+            <Text style={styles.value}>Working for: {currentProblem.workingFor}</Text>
           </View>
         </View>
 
-        {/* Assigned Problems */}
-        <View style={styles.card}>
-          <View style={styles.cardHeader}>
-            <MaterialIcons name="warning" size={20} color="#D97706" />
-            <Text style={[styles.cardHeaderText, { marginLeft: 6 }]}>
-              Assigned Civic Issues
-            </Text>
-            <View style={styles.assignedCount}>
-              <Text style={{ color: "white", fontWeight: "600" }}>
-                {assignedProblems.length}
-              </Text>
-            </View>
+        {/* Assigned Issues */}
+        <View style={[styles.cardBordered, styles.blueBorder]}>
+          <View style={styles.cardHeaderVisual}>
+            <Text style={styles.cardHeaderTextVisual}>ASSIGNED</Text>
+          </View>
+
+          <View style={[styles.assignedRow, styles.assignedHeaderRow]}>
+            <Text style={[styles.assignedId, styles.assignedHeaderText]}>ID</Text>
+            <Text style={[styles.assignedTitle, styles.assignedHeaderText]}>Title</Text>
+            <Text style={[styles.assignedPriority, styles.assignedHeaderText]}>Priority</Text>
           </View>
 
           {assignedProblems.map((problem) => (
-            <View key={problem.id} style={styles.assignedProblemRow}>
-              <View style={styles.problemInfoLeft}>
-                <MaterialIcons name="schedule" size={16} color="#444" />
-                <Text style={{ marginLeft: 6, fontWeight: "600" }}>
-                  {problem.id}
-                </Text>
-              </View>
-
-              <Text style={styles.assignedProblemTitle}>{problem.title}</Text>
-
+            <View key={problem.id} style={styles.assignedRow}>
+              <Text style={styles.assignedId}>{shortId(problem.id)}</Text>
+              <Text style={styles.assignedTitle}>{problem.title}</Text>
               <View
                 style={[
                   styles.priorityTagSmall,
                   { backgroundColor: priorityColors[problem.priority] },
                 ]}
               >
-                <Text style={{ fontWeight: "600" }}>{problem.priority}</Text>
+                <Text style={{ fontWeight: "600", color: "#FFF" }}>
+                  {problem.priority}
+                </Text>
               </View>
             </View>
           ))}
         </View>
 
         {/* Departments */}
-        <View style={styles.card}>
-          <Text style={styles.departmentsTitle}>Departments</Text>
+        <View style={[styles.card, styles.blueBorder]}>
+          <Text style={styles.departmentsTitle}>Other Departments</Text>
           <View style={styles.departmentsGrid}>
             {departments.map((dep) => (
               <TouchableOpacity
                 key={dep.name}
                 style={[styles.departmentBox, { backgroundColor: dep.color }]}
+                activeOpacity={0.6}
               >
                 <MaterialCommunityIcons
                   name={dep.icon}
-                  size={30}
-                  color="#444"
-                  style={{ marginBottom: 4 }}
+                  size={36}
+                  color="#1E3A8A"
+                  style={{ marginBottom: 6 }}
                 />
-                <Text style={{ fontWeight: "600" }}>{dep.name}</Text>
+                <Text style={{ fontWeight: "600", textAlign: "center" }}>{dep.name}</Text>
               </TouchableOpacity>
             ))}
           </View>
@@ -166,22 +186,26 @@ export default function EmployeeHome() {
 
 const styles = StyleSheet.create({
   container: { backgroundColor: "#FFF", padding: 12 },
+
+  /* User Card */
   userCard: {
     backgroundColor: "#E0E7FF",
     borderRadius: 12,
-    paddingVertical: 20,
+    paddingVertical: 16,
     paddingHorizontal: 16,
-    alignItems: "center",
     marginBottom: 20,
   },
-  userIcon: {
-    backgroundColor: "#3B82F6",
-    borderRadius: 50,
-    padding: 14,
-    marginBottom: 8,
+  blueBorder: {
+    borderColor: "#1E3A8A",
+    borderWidth: 2,
   },
-  userName: { fontWeight: "600", fontSize: 18, marginBottom: 2, color: "#000" },
-  userId: { fontSize: 12, fontWeight: "600", color: "#64748B", marginBottom: 12 },
+  userHeaderRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 12,
+  },
+  userName: { fontWeight: "600", fontSize: 18, color: "#000" },
+  userId: { fontSize: 12, fontWeight: "600", color: "#64748B" },
   performanceBox: {
     flexDirection: "row",
     backgroundColor: "#FFF",
@@ -189,12 +213,13 @@ const styles = StyleSheet.create({
     paddingVertical: 10,
     borderRadius: 12,
     justifyContent: "space-between",
-    width: "75%",
+    width: "100%",
     alignItems: "center",
     shadowColor: "#000",
     shadowOpacity: 0.1,
     shadowRadius: 5,
     elevation: 3,
+    marginBottom: 12,
   },
   pointsBadge: {
     backgroundColor: "#2563EB",
@@ -202,6 +227,26 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     paddingVertical: 4,
   },
+
+  statsRow: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+    marginTop: 8,
+  },
+  statBox: {
+    alignItems: "center",
+  },
+  statNumber: {
+    fontSize: 18,
+    fontWeight: "700",
+    color: "#16A34A",
+  },
+  statLabel: {
+    fontSize: 12,
+    color: "#374151",
+  },
+
+  /* Card Styles */
   card: {
     backgroundColor: "#FFF",
     borderRadius: 12,
@@ -212,35 +257,106 @@ const styles = StyleSheet.create({
     shadowRadius: 5,
     elevation: 3,
   },
-  cardHeader: { flexDirection: "row", alignItems: "center", marginBottom: 14 },
-  cardHeaderText: { fontWeight: "600", fontSize: 18 },
-  problemId: { fontWeight: "600", color: "#64748B", marginBottom: 6 },
-  problemTitle: { fontWeight: "600", fontSize: 16, marginBottom: 6 },
-  problemDescription: { color: "#64748B", marginBottom: 10 },
-  problemTagsRow: { flexDirection: "row", alignItems: "center", gap: 12 },
-  priorityTag: { paddingVertical: 6, paddingHorizontal: 14, borderRadius: 20 },
-  categoryTag: {
-    backgroundColor: "#E0E7FF",
-    paddingVertical: 6,
-    paddingHorizontal: 14,
-    borderRadius: 20,
+  cardBordered: {
+    borderWidth: 1,
+    borderColor: "#E5E7EB",
+    borderRadius: 12,
+    backgroundColor: "#FFF",
+    marginBottom: 20,
+    overflow: "hidden",
   },
-  assignedCount: {
-    backgroundColor: "#F59E0B",
-    borderRadius: 14,
-    paddingHorizontal: 8,
-    paddingVertical: 2,
-    marginLeft: 6,
+  cardHeaderVisual: {
+    backgroundColor: "#1E3A8A",
+    paddingVertical: 10,
+    paddingHorizontal: 12,
   },
-  assignedProblemRow: {
+  cardHeaderTextVisual: {
+    fontSize: 16,
+    fontWeight: "700",
+    color: "#FFF",
+  },
+
+  /* Info Rows */
+  infoRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginBottom: 12,
-    justifyContent: "space-between",
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E5E7EB",
   },
-  problemInfoLeft: { flexDirection: "row", alignItems: "center", width: "40%" },
-  assignedProblemTitle: { fontWeight: "600", width: "45%" },
-  priorityTagSmall: { paddingVertical: 4, paddingHorizontal: 10, borderRadius: 14 },
+  label: {
+    fontSize: 14,
+    color: "#374151",
+    fontWeight: "500",
+    width: 100,
+  },
+  value: {
+    fontSize: 14,
+    color: "#111827",
+    flexShrink: 1,
+  },
+  tagRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    padding: 12,
+    gap: 8,
+  },
+  priorityTag: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+    marginRight: 8,
+  },
+  categoryTag: {
+    paddingHorizontal: 10,
+    paddingVertical: 4,
+    borderRadius: 8,
+    backgroundColor: "#DBEAFE",
+    marginRight: 8,
+  },
+
+  /* Assigned Section */
+  assignedRow: {
+    flexDirection: "row",
+    alignItems: "center",
+    paddingVertical: 12,
+    paddingHorizontal: 12,
+    borderBottomWidth: 1,
+    borderBottomColor: "#E5E7EB",
+  },
+  assignedHeaderRow: {
+    backgroundColor: "#F3F4F6",
+  },
+  assignedHeaderText: {
+    fontWeight: "700",
+    color: "#111827",
+  },
+  assignedId: {
+    width: 60,
+    fontSize: 13,
+    fontWeight: "600",
+    color: "#374151",
+  },
+  assignedTitle: {
+    flex: 1,
+    fontSize: 14,
+    color: "#111827",
+    marginRight: 8,
+  },
+  assignedPriority: {
+    width: 80,
+    textAlign: "center",
+  },
+  priorityTagSmall: {
+    paddingVertical: 4,
+    paddingHorizontal: 10,
+    borderRadius: 14,
+    minWidth: 70,
+    alignItems: "center",
+  },
+
+  /* Departments */
   departmentsTitle: { fontWeight: "600", fontSize: 18, marginBottom: 12 },
   departmentsGrid: {
     flexDirection: "row",
