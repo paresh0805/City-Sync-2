@@ -12,7 +12,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons, FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 
-const Dashboard = () => {
+const CitizenHome = ({navigation}) => {
   const { width } = useWindowDimensions();
   const flatListRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -49,13 +49,21 @@ const Dashboard = () => {
   };
 
   return (
-    <SafeAreaView style={{ flex: 1 }} edges={['top', 'left', 'right']}>
+    <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
       <ScrollView style={styles.container}>
-        {/* Header */}
+
         <View style={styles.header}>
-          <Text style={styles.points}>⭐ 156</Text>
+          <Image
+            source={require("../assets/homelogo.png")}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+
+          <View style={styles.rightSection}>
+            <Text style={styles.points}>⭐ 156</Text>
           <View style={styles.avatar}>
-            <Text style={{ color: "#fff", fontWeight: "bold" }}>S</Text>
+              <Text style={{ color: "#fff", fontWeight: "bold" }}>S</Text>
+              </View>
           </View>
         </View>
 
@@ -76,7 +84,11 @@ const Dashboard = () => {
         <Text style={styles.sectionTitle}>Current Issues</Text>
         <View style={styles.carouselContainer}>
           <TouchableOpacity onPress={handlePrev} disabled={currentIndex === 0}>
-            <Ionicons name="chevron-back-circle" size={32} color={currentIndex === 0 ? "gray" : "black"} />
+            <Ionicons
+              name="chevron-back-circle"
+              size={32}
+              color={currentIndex === 0 ? "gray" : "black"}
+            />
           </TouchableOpacity>
 
           <FlatList
@@ -94,10 +106,23 @@ const Dashboard = () => {
             )}
           />
 
-          <TouchableOpacity onPress={handleNext} disabled={currentIndex === slides.length - 1}>
-            <Ionicons name="chevron-forward-circle" size={32} color={currentIndex === slides.length - 1 ? "gray" : "black"} />
+          <TouchableOpacity
+            onPress={handleNext}
+            disabled={currentIndex === slides.length - 1}
+          >
+            <Ionicons
+              name="chevron-forward-circle"
+              size={32}
+              color={currentIndex === slides.length - 1 ? "gray" : "black"}
+            />
           </TouchableOpacity>
         </View>
+
+        {/* Report Button - moved here */}
+        <TouchableOpacity style={styles.reportBtn} onPress={()=>navigation.navigate("ReportNewIssue")}>
+          <Ionicons name="camera" size={20} color="#fff" />
+          <Text style={styles.reportText}>Report New Issue</Text>
+        </TouchableOpacity>
 
         {/* Categories */}
         <Text style={styles.sectionTitle}>Report by Category</Text>
@@ -119,23 +144,25 @@ const Dashboard = () => {
           ))}
         </View>
 
-        {/* Report Button */}
-        <TouchableOpacity style={styles.reportBtn}>
-          <Ionicons name="camera" size={20} color="#fff" />
-          <Text style={styles.reportText}>Report New Issue</Text>
-        </TouchableOpacity>
         <Text style={styles.footer}>Help improve your community</Text>
       </ScrollView>
     </SafeAreaView>
   );
 };
 
-export default Dashboard;
+export default CitizenHome;
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#f9f9f9", padding: 15 },
-  header: { flexDirection: "row", justifyContent: "space-between", marginBottom: 10 },
-  points: { fontSize: 16, fontWeight: "600" },
+  header: { flexDirection: "row", marginBottom: 10 ,alignItems:"center",},
+  logo:{width:70,height:70,borderRadius:8,},
+  rightSection: {
+  flexDirection: "row",
+  alignItems: "center",
+  marginLeft:"auto",
+  gap: 10, // works in RN 0.71+, otherwise use margin
+},
+  points: { fontSize: 16, fontWeight: "600", marginRight:4},
   avatar: {
     backgroundColor: "#000080",
     borderRadius: 20,
@@ -171,8 +198,8 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     fontSize: 12,
   },
-  sectionTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 10 },
-  grid: { flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between" },
+  sectionTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 20,},
+  grid: { flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between" , marginBottom:30,},
   card: { padding: 15, borderRadius: 12, marginBottom: 15, alignItems: "center" },
   cardTitle: { fontSize: 15, fontWeight: "600", marginTop: 5, textAlign: "center" },
   count: {
@@ -191,7 +218,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     marginTop: 10,
-    marginBottom: 30,
+    marginBottom: 20,
   },
   reportText: { color: "#fff", fontWeight: "600", marginLeft: 8 },
   footer: { textAlign: "center", marginTop: 5, color: "gray" },

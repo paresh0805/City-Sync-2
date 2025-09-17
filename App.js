@@ -7,6 +7,7 @@ import Employee from './App/Pages/Employee.js';
 import Citizen from './App/Pages/Citizen.js';
 import CitizenHome from './App/Pages/CitizenHome.js';
 import EmployeeHome from './App/Pages/EmployeeHome.js';
+import ReportNewIssue from './App/Pages/ReportNewIssue.js';
 
 const Stack = createNativeStackNavigator();
 
@@ -19,6 +20,7 @@ const App = () => {
         <Stack.Screen name="CitizenLogin" component={Citizen} />
         <Stack.Screen name="CitizenHome" component={CitizenHome} />
         <Stack.Screen name="EmployeeHome" component={EmployeeHome} />
+        <Stack.Screen name="ReportNewIssue" component={ReportNewIssue} />
       </Stack.Navigator>
     </NavigationContainer>
   );
