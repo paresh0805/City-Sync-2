@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -9,18 +9,47 @@ import {
   ScrollView,
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
+import * as Location from "expo-location"; // ✅ import location
 import { Picker } from "@react-native-picker/picker";
 
 export default function ReportNewIssue() {
   const [image, setImage] = useState(null);
   const [issueType, setIssueType] = useState("");
   const [description, setDescription] = useState("");
-  const [priority, setPriority] = useState("");
+  const [location, setLocation] = useState(null);
 
-  // Open Camera
+  // 📍 Get real-time location
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        alert("Permission to access location was denied");
+        return;
+      }
+
+      let loc = await Location.getCurrentPositionAsync({});
+      let address = await Location.reverseGeocodeAsync(loc.coords);
+
+      if (address.length > 0) {
+        const place = address[0];
+        setLocation(
+          `${place.name || ""} ${place.street || ""}, ${place.city || ""}`
+        );
+      } else {
+        setLocation(`${loc.coords.latitude}, ${loc.coords.longitude}`);
+      }
+    })();
+  }, []);
+
   const openCamera = async () => {
+    const { status } = await ImagePicker.requestCameraPermissionsAsync();
+    if (status !== "granted") {
+      alert("Camera permission is required!");
+      return;
+    }
+
     let result = await ImagePicker.launchCameraAsync({
-      mediaTypes: [ImagePicker.MediaType.IMAGE],
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
       allowsEditing: true,
       aspect: [4, 3],
       quality: 1,
@@ -31,12 +60,11 @@ export default function ReportNewIssue() {
     }
   };
 
-  // Submit report
   const handleSubmit = () => {
     console.log({
       issueType,
       description,
-      priority,
+      location,
       image,
     });
     alert("Report Submitted!");
@@ -44,13 +72,16 @@ export default function ReportNewIssue() {
 
   return (
     <ScrollView style={styles.container}>
-        <View style={styles.toptxt}>
-            <Text style={styles.newreport}>New Report</Text>
-        </View>
-      {/* Location */}
+      <View style={styles.toptxt}>
+        <Text style={styles.newreport}>New Report</Text>
+      </View>
+
+      {/* 📍 Location */}
       <View style={styles.locationBox}>
         <Text style={styles.locationTitle}>📍 Current Location</Text>
-        <Text style={styles.locationText}>123 Main Street, Downtown</Text>
+        <Text style={styles.locationText}>
+          {location ? location : "Fetching location..."}
+        </Text>
       </View>
 
       {/* Add Photo */}
@@ -93,28 +124,6 @@ export default function ReportNewIssue() {
         multiline
       />
 
-      {/* Priority */}
-      <Text style={styles.sectionTitle}>Priority Level</Text>
-      <View style={styles.priorityBox}>
-        {["Low", "Medium", "High"].map((level) => (
-          <TouchableOpacity
-            key={level}
-            style={[
-              styles.priorityBtn,
-              priority === level && styles.prioritySelected,
-              level === "Low"
-                ? { borderColor: "green" }
-                : level === "Medium"
-                ? { borderColor: "orange" }
-                : { borderColor: "red" },
-            ]}
-            onPress={() => setPriority(level)}
-          >
-            <Text style={styles.priorityText}>{level}</Text>
-          </TouchableOpacity>
-        ))}
-      </View>
-
       {/* Submit Button */}
       <TouchableOpacity style={styles.submitBtn} onPress={handleSubmit}>
         <Text style={styles.submitText}>Submit Report</Text>
@@ -128,16 +137,16 @@ const styles = StyleSheet.create({
     flex: 1,
     padding: 16,
     backgroundColor: "#fff",
-    paddingTop:60,
+    paddingTop: 60,
   },
-  toptxt:{
-    flex:1,
-    alignItems:"center",
-    marginBottom:10,
+  toptxt: {
+    flex: 1,
+    alignItems: "center",
+    marginBottom: 10,
   },
-  newreport:{
-    fontSize:20,
-    fontWeight:"bold",
+  newreport: {
+    fontSize: 20,
+    fontWeight: "bold",
   },
   locationBox: {
     padding: 12,
@@ -196,22 +205,6 @@ const styles = StyleSheet.create({
     minHeight: 80,
     textAlignVertical: "top",
   },
-
-  priorityBox: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    marginBottom: 16,
-  },
-  priorityBtn: {
-    flex: 1,
-    padding: 10,
-    borderWidth: 2,
-    borderRadius: 8,
-    alignItems: "center",
-    marginHorizontal: 5,
-  },
-  prioritySelected: { backgroundColor: "#eee" },
-  priorityText: { fontWeight: "bold" },
 
   submitBtn: {
     backgroundColor: "#000",
