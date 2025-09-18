@@ -216,6 +216,7 @@ const CitizenHome = ({ navigation }) => {
           {/* Street Lighting */}
           <TouchableOpacity
             style={[styles.card, { backgroundColor: "#fff9db", width: cardWidth }]}
+            onPress={() => navigation.navigate("StreetLightingIssues")}
           >
             <MaterialIcons name="lightbulb" size={24} color="#e6b800" />
             <Text style={[styles.cardTitle, { color: "#e6b800" }]}>
@@ -226,6 +227,7 @@ const CitizenHome = ({ navigation }) => {
           {/* Waste Management */}
           <TouchableOpacity
             style={[styles.card, { backgroundColor: "#e6ffe6", width: cardWidth }]}
+            onPress={() => navigation.navigate("WasteIssues")}
           >
             <MaterialIcons name="delete" size={24} color="green" />
             <Text style={[styles.cardTitle, { color: "green" }]}>

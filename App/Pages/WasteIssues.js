@@ -23,14 +23,14 @@ export default function RoadIssues() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("https://backend-production-e436.up.railway.app/issue?category=Road Issues")
+    fetch("https://backend-production-e436.up.railway.app/issue?category=Waste Management")
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
           setIssues(data.issues);
         }
       })
-      .catch((err) => console.error("Fetch Road Issues Error:", err))
+      .catch((err) => console.error("Fetch Waste Issues Error:", err))
       .finally(() => setLoading(false));
   }, []);
 
