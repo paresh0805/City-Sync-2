@@ -7,8 +7,6 @@ import {
   TouchableOpacity,
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
-import { FontAwesome } from "@expo/vector-icons";
-import MaterialCommunityIcons from "react-native-vector-icons/MaterialCommunityIcons";
 
 const user = {
   name: "Vansh Kapila",
@@ -36,22 +34,13 @@ const assignedProblems = [
   { id: "CIV-2024-0888", title: "Broken sidewalk in Sector 4", priority: "Medium" },
 ];
 
-const departments = [
-  { name: "Roads", icon: "road-variant", color: "#CCE5FF" },
-  { name: "Electricity", icon: "lightbulb-on-outline", color: "#F2E6FF" },
-  { name: "Sanitation", icon: "delete", color: "#D9F2E6" },
-  { name: "Buildings", icon: "office-building", color: "#FFE6CC" },
-  { name: "Water Supply", icon: "water-pump", color: "#FFD9D9" },
-  { name: "Maintenance", icon: "tools", color: "#FFF3CC" },
-];
-
 const priorityColors = {
   High: "#FF6666",
   Medium: "#FFD966",
   Low: "#A8E6A1",
 };
 
-export default function EmployeeHome({navigation}) {
+export default function EmployeeHome({ navigation }) {
   const shortId = (fullId) => fullId.slice(-4);
 
   return (
@@ -127,10 +116,10 @@ export default function EmployeeHome({navigation}) {
             <Text style={styles.value}>Working for: {currentProblem.workingFor}</Text>
           </View>
 
-          {/* Button Added */}
+          {/* Button */}
           <TouchableOpacity
             style={styles.cardButton}
-            onPress={() => navigation.navigate('SpecificIssueEmployee')}
+            onPress={() => navigation.navigate("SpecificIssueEmployee")}
           >
             <Text style={styles.cardButtonText}>Details</Text>
           </TouchableOpacity>
@@ -164,28 +153,6 @@ export default function EmployeeHome({navigation}) {
               </View>
             </View>
           ))}
-        </View>
-
-        {/* Departments */}
-        <View style={[styles.card, styles.blueBorder]}>
-          <Text style={styles.departmentsTitle}>Other Departments</Text>
-          <View style={styles.departmentsGrid}>
-            {departments.map((dep) => (
-              <TouchableOpacity
-                key={dep.name}
-                style={[styles.departmentBox, { backgroundColor: dep.color }]}
-                activeOpacity={0.6}
-              >
-                <MaterialCommunityIcons
-                  name={dep.icon}
-                  size={36}
-                  color="#1E3A8A"
-                  style={{ marginBottom: 6 }}
-                />
-                <Text style={{ fontWeight: "600", textAlign: "center" }}>{dep.name}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
         </View>
       </ScrollView>
     </SafeAreaView>
@@ -255,16 +222,6 @@ const styles = StyleSheet.create({
   },
 
   /* Card Styles */
-  card: {
-    backgroundColor: "#FFF",
-    borderRadius: 12,
-    padding: 14,
-    marginBottom: 20,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 3,
-  },
   cardBordered: {
     borderWidth: 1,
     borderColor: "#E5E7EB",
@@ -376,21 +333,6 @@ const styles = StyleSheet.create({
     paddingHorizontal: 10,
     borderRadius: 14,
     minWidth: 70,
-    alignItems: "center",
-  },
-
-  /* Departments */
-  departmentsTitle: { fontWeight: "600", fontSize: 18, marginBottom: 12 },
-  departmentsGrid: {
-    flexDirection: "row",
-    flexWrap: "wrap",
-    justifyContent: "space-between",
-  },
-  departmentBox: {
-    width: "30%",
-    paddingVertical: 16,
-    borderRadius: 12,
-    marginBottom: 14,
     alignItems: "center",
   },
 });
