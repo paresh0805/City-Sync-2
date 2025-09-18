@@ -322,6 +322,38 @@ export default function ReportNewIssue() {
   };
 
   const handleSubmit = async () => {
+
+    if (!issueType || !description || !location || !image) {
+    alert("Please fill all fields and add an image!");
+    return;
+  }
+
+  // 1. Prepare FormData for prediction API
+  let predictForm = new FormData();
+  predictForm.append("image", {
+    uri: image,
+    name: "report.jpg",
+    type: "image/jpeg",
+  });
+
+  try {
+    // 2. Call /predict endpoint to get prediction
+    const predictResponse = await fetch("https://web-production-ff28.up.railway.app/predict", {
+      method: "POST",
+      body: predictForm,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    const predictData = await predictResponse.json();
+
+    if (!predictResponse.ok || !predictData.success) {
+      alert("Prediction failed: " + (predictData.message || "Unknown error"));
+      return;
+    }
+
+    const predictedCategory = predictData.label;
   if (!issueType || !description || !location || !image) {
     alert("Please fill all fields and add an image!");
     return;
@@ -372,41 +404,7 @@ export default function ReportNewIssue() {
     alert("Something went wrong. Please try again.");
   }
 };
-  const handlePredict = async () => {
-  if (!image) {
-    alert("Please select an image!");
-    return;
-  }
-
-  let formData = new FormData();
-  formData.append("image", {
-    uri: image,
-    name: "report.jpg",
-    type: "image/jpeg",
-  });
-
-  try {
-    const response = await fetch("http://your-backend-url/predict", {
-      method: "POST",
-      body: formData,
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-
-    const data = await response.json();
-
-    if (response.ok && data.success) {
-      alert(`Prediction: ${data.label} (Confidence: ${(data.confidence * 100).toFixed(2)}%)`);
-      console.log("Prediction response:", data);
-    } else {
-      alert("Prediction failed: " + (data.message || "Unknown error"));
-    }
-  } catch (error) {
-    console.error("Prediction error:", error);
-    alert("Something went wrong with prediction.");
-  }
-};
+ 
 
 
 
