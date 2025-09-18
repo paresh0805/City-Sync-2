@@ -130,7 +130,7 @@ const Citizen = ({navigation}) => {
         </View>
 
         {/* Login Button */}
-        <TouchableOpacity style={styles.loginButton} onPress={handleLogin}>
+        <TouchableOpacity style={styles.loginButton} onPress={()=>navigation.navigate('CitizenHome')}>
           <Text style={styles.loginText}>Login</Text>
         </TouchableOpacity>
 
