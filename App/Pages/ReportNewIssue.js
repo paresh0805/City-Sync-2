@@ -61,56 +61,72 @@ export default function ReportNewIssue() {
   };
 
   const handleSubmit = async () => {
-  if (!issueType || !description || !location || !image) {
-    alert("Please fill all fields and add an image!");
-    return;
-  }
+//   if (!issueType || !description || !location || !image) {
+//     alert("Please fill all fields and add an image!");
+//     return;
+//   }
 
-  let formData = new FormData();
-  formData.append("description", description);
-  formData.append("location", location);
-  formData.append("citizenId", "12345"); // 🔹 Replace with actual logged-in user ID
-  formData.append("issueType", issueType); // optional, add if you want
+//   let formData = new FormData();
+//   formData.append("description", description);
+//   formData.append("location", location);
+//   formData.append("citizenId", "12345"); // 🔹 Replace with actual logged-in user ID
+//   formData.append("issueType", issueType); // optional, add if you want
 
-  formData.append("image", {
-    uri: image,
-    name: "report.jpg",
-    type: "image/jpeg",
-  });
+//   formData.append("image", {
+//     uri: image,
+//     name: "report.jpg",
+//     type: "image/jpeg",
+//   });
 
+//   try {
+//     const response = await fetch("https://backend-production-e436.up.railway.app/issue", {
+//       method: "POST",
+//       body: formData,
+//     });
+
+//     const text = await response.text();
+//     console.log("📩 Raw server response:", text);
+
+//     let data;
+//     try {
+//       data = JSON.parse(text);
+//     } catch (err) {
+//       throw new Error("Server did not return JSON");
+//     }
+
+//     if (response.ok && data.success) {
+//       alert("✅ Issue reported successfully!");
+//       console.log("Server response:", data);
+
+//       // Clear form
+//       setIssueType("");
+//       setDescription("");
+//       setImage(null);
+//     } else {
+//       alert("❌ Failed: " + (data.message || "Unknown error"));
+//     }
+//   } catch (error) {
+//     console.error("Error submitting report:", error);
+//     alert("Something went wrong. Please try again.");
+//   }
+// };
+async function fetchData() {
   try {
-    const response = await fetch("https://backend-production-e436.up.railway.app/issue", {
-      method: "POST",
-      body: formData,
-      
-    });
-
-    const text = await response.text();
-    console.log("📩 Raw server response:", text);
-
-    let data;
-    try {
-      data = JSON.parse(text);
-    } catch (err) {
-      throw new Error("Server did not return JSON");
+    const response = await fetch('https://backend-production-e436.up.railway.app/issue'); // Make the fetch request
+    if (!response.ok) {
+      throw new Error('Network response was not ok'); // Handle errors
     }
-
-    if (response.ok && data.success) {
-      alert("✅ Issue reported successfully!");
-      console.log("Server response:", data);
-
-      // Clear form
-      setIssueType("");
-      setDescription("");
-      setImage(null);
-    } else {
-      alert("❌ Failed: " + (data.message || "Unknown error"));
-    }
+    const data = await response.json(); // Parse the JSON response
+    console.log(data); // Process the data
   } catch (error) {
-    console.error("Error submitting report:", error);
-    alert("Something went wrong. Please try again.");
+    console.error('Error fetching data:', error); // Catch and log any errors
   }
-};
+}
+
+fetchData();
+  
+
+}
 
 
 

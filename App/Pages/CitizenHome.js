@@ -1,4 +1,4 @@
-import React, { useRef, useState } from "react";
+import React, { useRef, useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -11,28 +11,40 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons, FontAwesome5, MaterialIcons } from "@expo/vector-icons";
+import MapView, { Marker } from "react-native-maps";
+import * as Location from "expo-location";
 
-const CitizenHome = ({navigation}) => {
+const CitizenHome = ({ navigation }) => {
   const { width } = useWindowDimensions();
   const flatListRef = useRef(null);
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [location, setLocation] = useState(null);
 
   const cardWidth = (width - 60) / 2;
-
-  const categories = [
-    { title: "Road Issues", count: 23, color: "#ffe5e5", icon: "warning", textColor: "red" },
-    { title: "Street Lighting", count: 15, color: "#fff9db", icon: "lightbulb", textColor: "#e6b800" },
-    { title: "Waste Management", count: 18, color: "#e6ffe6", icon: "delete", textColor: "green" },
-    { title: "Vandalism", count: 8, color: "#f5e6ff", icon: "spray-can", textColor: "purple", fontFamily: "FontAwesome5" },
-    { title: "Parks & Trees", count: 12, color: "#e6fff7", icon: "park", textColor: "teal" },
-    { title: "Infrastructure", count: 9, color: "#e6ecff", icon: "build", textColor: "navy" },
-  ];
 
   const slides = [
     { id: "1", text: "Pothole on Broadway Street", status: "In Progress" },
     { id: "2", text: "Broken Streetlight near Park", status: "Pending" },
     { id: "3", text: "Overflowing Trash Bin at 5th Ave", status: "Resolved" },
   ];
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
+        return;
+      }
+
+      let loc = await Location.getCurrentPositionAsync({});
+      setLocation(loc.coords);
+
+      // Optional: Track location changes in real-time
+      // Location.watchPositionAsync({ distanceInterval: 10 }, (locUpdate) => {
+      //   setLocation(locUpdate.coords);
+      // });
+    })();
+  }, []);
 
   const handleNext = () => {
     if (currentIndex < slides.length - 1) {
@@ -51,7 +63,7 @@ const CitizenHome = ({navigation}) => {
   return (
     <SafeAreaView style={{ flex: 1 }} edges={["top", "left", "right"]}>
       <ScrollView style={styles.container}>
-
+        {/* Header */}
         <View style={styles.header}>
           <Image
             source={require("../assets/homelogo.png")}
@@ -61,9 +73,9 @@ const CitizenHome = ({navigation}) => {
 
           <View style={styles.rightSection}>
             <Text style={styles.points}>⭐ 156</Text>
-          <View style={styles.avatar}>
+            <View style={styles.avatar}>
               <Text style={{ color: "#fff", fontWeight: "bold" }}>S</Text>
-              </View>
+            </View>
           </View>
         </View>
 
@@ -72,12 +84,33 @@ const CitizenHome = ({navigation}) => {
 
         {/* City Map */}
         <View style={styles.mapCard}>
-          <Image
-            source={{ uri: "https://via.placeholder.com/600x300.png?text=City+Map" }}
-            style={styles.mapImage}
-            resizeMode="cover"
-          />
-          <Text style={styles.mapText}>City Map</Text>
+          {location ? (
+            <>
+              <MapView
+                style={styles.mapImage}
+                initialRegion={{
+                  latitude: location.latitude,
+                  longitude: location.longitude,
+                  latitudeDelta: 0.01,
+                  longitudeDelta: 0.01,
+                }}
+                showsUserLocation={true}
+              >
+                <Marker
+                  coordinate={{
+                    latitude: location.latitude,
+                    longitude: location.longitude,
+                  }}
+                  title="You are here"
+                />
+              </MapView>
+              <Text style={styles.mapText}>City Map</Text>
+            </>
+          ) : (
+            <Text style={{ padding: 20, textAlign: "center" }}>
+              Loading map...
+            </Text>
+          )}
         </View>
 
         {/* Current Issues Carousel */}
@@ -118,8 +151,11 @@ const CitizenHome = ({navigation}) => {
           </TouchableOpacity>
         </View>
 
-        {/* Report Button - moved here */}
-        <TouchableOpacity style={styles.reportBtn} onPress={()=>navigation.navigate("ReportNewIssue")}>
+        {/* Report Button */}
+        <TouchableOpacity
+          style={styles.reportBtn}
+          onPress={() => navigation.navigate("ReportNewIssue")}
+        >
           <Ionicons name="camera" size={20} color="#fff" />
           <Text style={styles.reportText}>Report New Issue</Text>
         </TouchableOpacity>
@@ -127,21 +163,60 @@ const CitizenHome = ({navigation}) => {
         {/* Categories */}
         <Text style={styles.sectionTitle}>Report by Category</Text>
         <View style={styles.grid}>
-          {categories.map((item, index) => (
-            <TouchableOpacity
-              key={index}
-              style={[styles.card, { backgroundColor: item.color, width: cardWidth }]}
-              activeOpacity={0.8}
-            >
-              {item.fontFamily === "FontAwesome5" ? (
-                <FontAwesome5 name={item.icon} size={24} color={item.textColor} />
-              ) : (
-                <MaterialIcons name={item.icon} size={24} color={item.textColor} />
-              )}
-              <Text style={[styles.cardTitle, { color: item.textColor }]}>{item.title}</Text>
-              <Text style={styles.count}>{item.count}</Text>
-            </TouchableOpacity>
-          ))}
+          {/* Road Issues */}
+          <TouchableOpacity
+            style={[styles.card, { backgroundColor: "#ffe5e5", width: cardWidth }]}
+            onPress={() => navigation.navigate("RoadIssues")}
+          >
+            <MaterialIcons name="warning" size={24} color="red" />
+            <Text style={[styles.cardTitle, { color: "red" }]}>Road Issues</Text>
+            <Text style={styles.count}>23</Text>
+          </TouchableOpacity>
+
+          {/* Street Lighting */}
+          <TouchableOpacity
+            style={[styles.card, { backgroundColor: "#fff9db", width: cardWidth }]}
+          >
+            <MaterialIcons name="lightbulb" size={24} color="#e6b800" />
+            <Text style={[styles.cardTitle, { color: "#e6b800" }]}>Street Lighting</Text>
+            <Text style={styles.count}>15</Text>
+          </TouchableOpacity>
+
+          {/* Waste Management */}
+          <TouchableOpacity
+            style={[styles.card, { backgroundColor: "#e6ffe6", width: cardWidth }]}
+          >
+            <MaterialIcons name="delete" size={24} color="green" />
+            <Text style={[styles.cardTitle, { color: "green" }]}>Waste Management</Text>
+            <Text style={styles.count}>18</Text>
+          </TouchableOpacity>
+
+          {/* Vandalism */}
+          <TouchableOpacity
+            style={[styles.card, { backgroundColor: "#f5e6ff", width: cardWidth }]}
+          >
+            <FontAwesome5 name="spray-can" size={24} color="purple" />
+            <Text style={[styles.cardTitle, { color: "purple" }]}>Vandalism</Text>
+            <Text style={styles.count}>8</Text>
+          </TouchableOpacity>
+
+          {/* Parks & Trees */}
+          <TouchableOpacity
+            style={[styles.card, { backgroundColor: "#e6fff7", width: cardWidth }]}
+          >
+            <MaterialIcons name="park" size={24} color="teal" />
+            <Text style={[styles.cardTitle, { color: "teal" }]}>Parks & Trees</Text>
+            <Text style={styles.count}>12</Text>
+          </TouchableOpacity>
+
+          {/* Infrastructure */}
+          <TouchableOpacity
+            style={[styles.card, { backgroundColor: "#e6ecff", width: cardWidth }]}
+          >
+            <MaterialIcons name="build" size={24} color="navy" />
+            <Text style={[styles.cardTitle, { color: "navy" }]}>Infrastructure</Text>
+            <Text style={styles.count}>9</Text>
+          </TouchableOpacity>
         </View>
 
         <Text style={styles.footer}>Help improve your community</Text>
@@ -154,15 +229,15 @@ export default CitizenHome;
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#f9f9f9", padding: 15 },
-  header: { flexDirection: "row", marginBottom: 10 ,alignItems:"center",},
-  logo:{width:70,height:70,borderRadius:8,},
+  header: { flexDirection: "row", marginBottom: 10, alignItems: "center" },
+  logo: { width: 70, height: 70, borderRadius: 8 },
   rightSection: {
-  flexDirection: "row",
-  alignItems: "center",
-  marginLeft:"auto",
-  gap: 10, // works in RN 0.71+, otherwise use margin
-},
-  points: { fontSize: 16, fontWeight: "600", marginRight:4},
+    flexDirection: "row",
+    alignItems: "center",
+    marginLeft: "auto",
+    gap: 10,
+  },
+  points: { fontSize: 16, fontWeight: "600", marginRight: 4 },
   avatar: {
     backgroundColor: "#000080",
     borderRadius: 20,
@@ -173,9 +248,25 @@ const styles = StyleSheet.create({
   },
   welcome: { fontSize: 20, fontWeight: "bold", marginTop: 10 },
   subtitle: { fontSize: 14, color: "gray", marginBottom: 15 },
-  mapCard: { borderRadius: 12, overflow: "hidden", marginBottom: 15, backgroundColor: "#ddd" },
-  mapImage: { width: "100%", aspectRatio: 2 },
-  mapText: { position: "absolute", bottom: 10, left: 10, color: "#fff", fontWeight: "bold" },
+  mapCard: {
+    borderRadius: 12,
+    overflow: "hidden",
+    marginBottom: 15,
+    backgroundColor: "#ddd",
+    height: 200,
+  },
+  mapImage: { width: "100%", height: "100%" },
+  mapText: {
+    position: "absolute",
+    top: 10,
+    left: 10,
+    color: "#fff",
+    fontWeight: "bold",
+    backgroundColor: "rgba(0,0,0,0.4)",
+    paddingHorizontal: 8,
+    paddingVertical: 3,
+    borderRadius: 5,
+  },
   carouselContainer: {
     flexDirection: "row",
     alignItems: "center",
@@ -198,9 +289,20 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     fontSize: 12,
   },
-  sectionTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 20,},
-  grid: { flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between" , marginBottom:30,},
-  card: { padding: 15, borderRadius: 12, marginBottom: 15, alignItems: "center" },
+  sectionTitle: { fontSize: 18, fontWeight: "bold", marginBottom: 20 },
+  grid: { flexDirection: "row", flexWrap: "wrap", justifyContent: "space-between", marginBottom: 30 },
+  card: {
+    padding: 15,
+    borderRadius: 12,
+    marginBottom: 15,
+    alignItems: "center",
+    justifyContent: "center",
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 3,
+    elevation: 3,
+  },
   cardTitle: { fontSize: 15, fontWeight: "600", marginTop: 5, textAlign: "center" },
   count: {
     marginTop: 5,
@@ -219,6 +321,11 @@ const styles = StyleSheet.create({
     alignItems: "center",
     marginTop: 10,
     marginBottom: 20,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3,
+    elevation: 4,
   },
   reportText: { color: "#fff", fontWeight: "600", marginLeft: 8 },
   footer: { textAlign: "center", marginTop: 5, color: "gray" },
