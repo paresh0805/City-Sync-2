@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { Ionicons, FontAwesome5, MaterialIcons } from "@expo/vector-icons";
-import MapView, { Marker } from "react-native-maps";
+import MapView, { Marker, Heatmap } from "react-native-maps";
 import * as Location from "expo-location";
 
 const CitizenHome = ({ navigation }) => {
@@ -28,6 +28,19 @@ const CitizenHome = ({ navigation }) => {
     { id: "3", text: "Overflowing Trash Bin at 5th Ave", status: "Resolved" },
   ];
 
+  const issues = [
+    { latitude: 30.7333, longitude: 76.7794, weight: 1 }, // Sector 17
+    { latitude: 30.7340, longitude: 76.7820, weight: 1 }, // Sector 22
+    { latitude: 30.7355, longitude: 76.7840, weight: 1 }, // Sector 35
+    { latitude: 30.7370, longitude: 76.7870, weight: 1 }, // Sector 43
+    { latitude: 30.7385, longitude: 76.7895, weight: 1 }, // Sector 44
+    { latitude: 30.7400, longitude: 76.7910, weight: 1 }, // Sector 45
+    { latitude: 30.7415, longitude: 76.7930, weight: 1 }, // Sector 46
+    { latitude: 30.7430, longitude: 76.7950, weight: 1 }, // Sector 47
+    { latitude: 30.7445, longitude: 76.7970, weight: 1 }, // Sector 48
+    { latitude: 30.7460, longitude: 76.7990, weight: 1 }, // Sector 49
+  ];
+
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestForegroundPermissionsAsync();
@@ -38,11 +51,6 @@ const CitizenHome = ({ navigation }) => {
 
       let loc = await Location.getCurrentPositionAsync({});
       setLocation(loc.coords);
-
-      // Optional: Track location changes in real-time
-      // Location.watchPositionAsync({ distanceInterval: 10 }, (locUpdate) => {
-      //   setLocation(locUpdate.coords);
-      // });
     })();
   }, []);
 
@@ -89,10 +97,10 @@ const CitizenHome = ({ navigation }) => {
               <MapView
                 style={styles.mapImage}
                 initialRegion={{
-                  latitude: location.latitude,
-                  longitude: location.longitude,
-                  latitudeDelta: 0.01,
-                  longitudeDelta: 0.01,
+                  latitude: 30.7333,
+                  longitude: 76.7794,
+                  latitudeDelta: 0.05,
+                  longitudeDelta: 0.05,
                 }}
                 showsUserLocation={true}
               >
@@ -102,6 +110,17 @@ const CitizenHome = ({ navigation }) => {
                     longitude: location.longitude,
                   }}
                   title="You are here"
+                />
+
+                <Heatmap
+                  points={issues}
+                  opacity={0.7}
+                  radius={50}
+                  gradient={{
+                    colors: ["green", "yellow", "red"],
+                    startPoints: [0.1, 0.5, 1],
+                    colorMapSize: 256,
+                  }}
                 />
               </MapView>
               <Text style={styles.mapText}>City Map</Text>

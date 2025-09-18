@@ -51,7 +51,7 @@ const priorityColors = {
   Low: "#A8E6A1",
 };
 
-export default function EmployeeHome() {
+export default function EmployeeHome({navigation}) {
   const shortId = (fullId) => fullId.slice(-4);
 
   return (
@@ -126,6 +126,14 @@ export default function EmployeeHome() {
             </View>
             <Text style={styles.value}>Working for: {currentProblem.workingFor}</Text>
           </View>
+
+          {/* Button Added */}
+          <TouchableOpacity
+            style={styles.cardButton}
+            onPress={() => navigation.navigate('SpecificIssueEmployee')}
+          >
+            <Text style={styles.cardButtonText}>Details</Text>
+          </TouchableOpacity>
         </View>
 
         {/* Assigned Issues */}
@@ -314,6 +322,21 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: "#DBEAFE",
     marginRight: 8,
+  },
+
+  /* Button */
+  cardButton: {
+    backgroundColor: "#1E3A8A",
+    paddingVertical: 10,
+    borderRadius: 12,
+    marginHorizontal: 12,
+    marginBottom: 12,
+    alignItems: "center",
+  },
+  cardButtonText: {
+    color: "#FFF",
+    fontWeight: "600",
+    fontSize: 14,
   },
 
   /* Assigned Section */
