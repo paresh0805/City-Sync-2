@@ -61,55 +61,28 @@ export default function ReportNewIssue() {
     }
   };
 
-  // 📤 Submit Report
+  // 🚀 Submit Report to backend
   const handleSubmit = async () => {
     if (!issueType || !description || !location || !image) {
       alert("Please fill all fields and add an image!");
       return;
     }
 
-    // 1. Prepare FormData for prediction API
-    let predictForm = new FormData();
-    predictForm.append("image", {
+    let formData = new FormData();
+    formData.append("description", description);
+    formData.append("location", location);
+    formData.append("citizenId", "12345"); // 🔹 Replace with actual logged-in user ID
+    formData.append("issueType", issueType);
+
+    formData.append("image", {
       uri: image,
       name: "report.jpg",
       type: "image/jpeg",
     });
 
     try {
-      // 2. Call /predict endpoint
-      const predictResponse = await fetch(
-        "https://web-production-ff28.up.railway.app/predict",
-        {
-          method: "POST",
-          body: predictForm,
-          // ❌ Don’t set Content-Type manually
-        }
-      );
-
-      const predictData = await predictResponse.json();
-
-      if (!predictResponse.ok || !predictData.success) {
-        alert("Prediction failed: " + (predictData.message || "Unknown error"));
-        return;
-      }
-
-      const predictedCategory = predictData.label;
-
-      // 3. Submit final issue report
-      let formData = new FormData();
-      formData.append("description", description);
-      formData.append("location", location);
-      formData.append("citizenId", "12345"); // 🔹 Replace with actual logged-in user ID
-      formData.append("category", issueType || predictedCategory); // Use dropdown OR ML prediction
-      formData.append("image", {
-        uri: image,
-        name: "report.jpg",
-        type: "image/jpeg",
-      });
-
       const response = await fetch(
-        "https://backend-production-e436.up.railway.app/issue",
+        "https://web-production-ff28.up.railway.app/issue",
         {
           method: "POST",
           body: formData,
@@ -178,12 +151,11 @@ export default function ReportNewIssue() {
           onValueChange={(itemValue) => setIssueType(itemValue)}
         >
           <Picker.Item label="Select issue category" value="" />
-          <Picker.Item label="Road Issue" value="Road Issues" />
-          <Picker.Item label="Street Lighting" value="Street Lighting" />
-          <Picker.Item label="Waste/Garbage" value="Waste Management" />
-          <Picker.Item label="Vandalism" value="Vandalism" />
-          <Picker.Item label="Parks & Trees" value="Parks&Trees" />
-          <Picker.Item label="SideWalk/Infrastructure" value="Infrastructure" />
+          <Picker.Item label="Pothole" value="Pothole" />
+          <Picker.Item label="Broken Streetlight" value="Broken Streetlight" />
+          <Picker.Item label="Overflowing Trash" value="Overflowing Trash" />
+          <Picker.Item label="Graffiti" value="Graffiti" />
+          <Picker.Item label="Sidewalk Issue" value="Sidewalk Issue" />
           <Picker.Item label="Other" value="Other" />
         </Picker>
       </View>

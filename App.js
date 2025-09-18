@@ -9,6 +9,8 @@ import CitizenHome from './App/Pages/CitizenHome.js';
 import EmployeeHome from './App/Pages/EmployeeHome.js';
 import ReportNewIssue from './App/Pages/ReportNewIssue.js';
 import RoadIssues from './App/Pages/RoadIssues.js';
+import StreetLightingIssues from './App/Pages/StreetLightingIssues.js';
+import WasteIssues from './App/Pages/WasteIssues.js';
 import SpecificIssueEmployee from './App/Pages/SpecificIssueEmployee.js';
 import EmployeeDashboard from './App/Pages/EmployeeDashboard.js';
 
@@ -26,6 +28,8 @@ const App = () => {
         <Stack.Screen name="EmployeeHome" component={EmployeeHome} />
         <Stack.Screen name="ReportNewIssue" component={ReportNewIssue} />
         <Stack.Screen name="RoadIssues" component={RoadIssues} />
+        <Stack.Screen name="WasteIssues" component={WasteIssues} />
+        <Stack.Screen name="StreetLightingIssues" component={StreetLightingIssues} />
         <Stack.Screen name="SpecificIssueEmployee" component={SpecificIssueEmployee} />
         <Stack.Screen name="EmployeeDashboard" component={EmployeeDashboard} />
       </Stack.Navigator>
