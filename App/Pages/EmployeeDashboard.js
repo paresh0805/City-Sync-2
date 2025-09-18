@@ -1,44 +1,3 @@
-// import React from 'react';
-// import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
-
-// const EmployeeDashboard = ({ navigation }) => {
-//   return (
-//     <View style={styles.container}>
-//       <Text style={styles.heading}>Employee Dashboard</Text>
-
-//       <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate('EmployeeHome')}>
-//         <Text style={styles.buttonText}>Vansh</Text>
-//       </TouchableOpacity>
-//     </View>
-//   );
-// };
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     justifyContent: "center",
-//     alignItems: "center",
-//     backgroundColor: "#fff",
-//   },
-//   heading: {
-//     fontSize: 20,
-//     fontWeight: "bold",
-//     marginBottom: 20,
-//   },
-//   button: {
-//     backgroundColor: "#000",
-//     paddingVertical: 12,
-//     paddingHorizontal: 24,
-//     borderRadius: 8,
-//   },
-//   buttonText: {
-//     color: "#fff",
-//     fontSize: 16,
-//     fontWeight: "bold",
-//   },
-// });
-
-// export default EmployeeDashboard;
 import React, { useState } from "react";
 import {
   View,
@@ -50,88 +9,148 @@ import {
   SafeAreaView,
 } from "react-native";
 
-// Departments data
-const departments = [
-  {
-    id: "water",
-    name: "Water",
-    image:
-      "https://images.unsplash.com/photo-1521207418485-99c705420785?w=800&q=80", // flowing water
-  },
-  {
-    id: "graffiti",
-    name: "Graffiti",
-    image:
-      "https://images.unsplash.com/photo-1581785974428-c58bd9df97da?w=800&q=80", // graffiti wall
-  },
-  {
-    id: "sanitation",
-    name: "Sanitation",
-    image:
-      "https://images.unsplash.com/photo-1591267989190-5e32c0aaf645?w=800&q=80", // cleaning worker
-  },
-  {
-    id: "infrastructure",
-    name: "Infrastructure",
-    image:
-      "https://images.unsplash.com/photo-1505842465776-3d90f616310d?w=800&q=80", // bridge/road
-  },
-  {
-    id: "electricity",
-    name: "Electricity",
-    image:
-      "https://images.unsplash.com/photo-1509395176047-4a66953fd231?w=800&q=80", // power lines
-  },
-  {
-    id: "sewage",
-    name: "Sewage",
-    image:
-      "https://images.unsplash.com/photo-1606813902734-2f5b98e65ce1?w=800&q=80", // drainage pipes
-  },
-];
-
-export default function EmployeeDashboard() {
+export default function EmployeeDashboard({navigation}) {
   const [selectedDepartment, setSelectedDepartment] = useState(null);
 
-  const handleDepartmentClick = (id) => {
-    setSelectedDepartment(id);
-    console.log(`Selected department: ${id}`);
+  const handleDepartmentClick = (name) => {
+    setSelectedDepartment(name);
+    console.log(`Selected department: ${name}`);
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      {/* Header */}
-      <View style={styles.header}>
-        <Text style={styles.headerText}>CompanyApp</Text>
-      </View>
-
       <ScrollView contentContainerStyle={styles.content}>
-        {/* Employee Performance Card */}
-        <View style={styles.cardWrapper}>
-          <Image
-            source={{
-              uri: "https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=800&q=80",
-            }}
-            style={styles.performanceCard}
-          />
+        {/* Performance Card */}
+        <View style={styles.performanceCard}>
+          <View style={styles.headerRow}>
+            <Text style={styles.nameText}>Vansh Kapila</Text>
+            <Text style={styles.idText}>CIT-2024-1043</Text>
+          </View>
+
+          <View style={styles.pointsContainer}>
+            <Text style={styles.pointsLabel}>Performance Points</Text>
+            <View style={styles.pointsBadge}>
+              <Text style={styles.pointsText}>850 pts</Text>
+            </View>
+          </View>
+
+          <View style={styles.statsRow}>
+            <View style={styles.statBox}>
+              <Text style={[styles.statValue, { color: "#22c55e" }]}>5</Text>
+              <Text style={styles.statLabel}>Assigned</Text>
+            </View>
+            <View style={styles.statBox}>
+              <Text style={[styles.statValue, { color: "#16a34a" }]}>12</Text>
+              <Text style={styles.statLabel}>Completed</Text>
+            </View>
+            <View style={styles.statBox}>
+              <Text style={[styles.statValue, { color: "#0284c7" }]}>1</Text>
+              <Text style={styles.statLabel}>Working On</Text>
+            </View>
+          </View>
         </View>
 
         {/* Department Grid */}
         <View style={styles.grid}>
-          {departments.map((dept) => (
-            <TouchableOpacity
-              key={dept.id}
-              style={styles.deptCard}
-              onPress={() => handleDepartmentClick(dept.name)}
-            >
-              <Image source={{ uri: dept.image }} style={styles.deptImage} />
-              <Text style={styles.deptText}>{dept.name}</Text>
-            </TouchableOpacity>
-          ))}
+          {/* Water */}
+          <TouchableOpacity
+            style={styles.deptCard}
+            onPress={() => navigation.navigate("EmployeeHome")}
+          >
+            <Image
+              source={{
+                uri: "https://images.unsplash.com/photo-1521207418485-99c705420785?w=800&q=80",
+              }}
+              style={styles.deptImage}
+            />
+            <View style={styles.deptInfo}>
+              <Text style={styles.deptText}>Water</Text>
+            </View>
+          </TouchableOpacity>
+
+          {/* Graffiti */}
+          <TouchableOpacity
+            style={styles.deptCard}
+            onPress={() => handleDepartmentClick("Graffiti")}
+          >
+            <Image
+              source={{
+                uri: "https://vistanow.org/wp-content/uploads/2016/11/8385870630_f86414be9c_b-1024x768.jpg",
+              }}
+              style={styles.deptImage}
+            />
+            <View style={styles.deptInfo}>
+              <Text style={styles.deptText}>Graffiti</Text>
+            </View>
+          </TouchableOpacity>
+
+          {/* Sanitation */}
+          <TouchableOpacity
+            style={styles.deptCard}
+            onPress={() => handleDepartmentClick("Sanitation")}
+          >
+            <Image
+              source={{
+                uri: "https://aecom.com/blog/wp-content/uploads/2017/11/Addressing-Urban-Sanitation-Crisis-e1511277087204.jpg",
+              }}
+              style={styles.deptImage}
+            />
+            <View style={styles.deptInfo}>
+              <Text style={styles.deptText}>Sanitation</Text>
+            </View>
+          </TouchableOpacity>
+
+          {/* Infrastructure */}
+          <TouchableOpacity
+            style={styles.deptCard}
+            onPress={() => handleDepartmentClick("Infrastructure")}
+          >
+            <Image
+              source={{
+                uri: "https://media.licdn.com/dms/image/v2/C4E12AQHoaVc1r5bWqw/article-cover_image-shrink_600_2000/article-cover_image-shrink_600_2000/0/1553250509285?e=2147483647&v=beta&t=SXjFoj8x9KADHg-dFB7I-TVDF-wdkq8rLqy3fd0GbkY",
+              }}
+              style={styles.deptImage}
+            />
+            <View style={styles.deptInfo}>
+              <Text style={styles.deptText}>Infrastructure</Text>
+            </View>
+          </TouchableOpacity>
+
+          {/* Electricity */}
+          <TouchableOpacity
+            style={styles.deptCard}
+            onPress={() => handleDepartmentClick("Electricity")}
+          >
+            <Image
+              source={{
+                uri: "https://img.mathrubhumi.com/view/acePublic/alias/contentid/1jqpyiu4qo6bxcug5y3/0/electricity-2-jpg.webp?f=3%3A2&q=0.75&w=900",
+              }}
+              style={styles.deptImage}
+            />
+            <View style={styles.deptInfo}>
+              <Text style={styles.deptText}>Electricity</Text>
+            </View>
+          </TouchableOpacity>
+
+          {/* Sewage */}
+          <TouchableOpacity
+            style={styles.deptCard}
+            onPress={() => handleDepartmentClick("Sewage")}
+          >
+            <Image
+              source={{
+                uri: "https://s3.eu-west-2.amazonaws.com/assets.theriverstrust.org/Images/_1200x675_crop_center-center_60_line/Sewage-website_2024-02-12-122219_qtcj.jpg",
+              }}
+              style={styles.deptImage}
+            />
+            <View style={styles.deptInfo}>
+              <Text style={styles.deptText}>Sewage</Text>
+            </View>
+          </TouchableOpacity>
         </View>
       </ScrollView>
 
-      {/* Selected Department Feedback */}
+      {/* Selected Department Toast */}
       {selectedDepartment && (
         <View style={styles.toast}>
           <Text style={styles.toastText}>
@@ -144,28 +163,55 @@ export default function EmployeeDashboard() {
 }
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: "#f0f4ff" },
-  header: {
-    backgroundColor: "#2563eb",
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    shadowColor: "#000",
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  headerText: { color: "white", fontSize: 20, fontWeight: "bold" },
+  container: { flex: 1, backgroundColor: "#f9fafb" },
   content: { padding: 16, paddingBottom: 100 },
-  cardWrapper: { alignItems: "center", marginBottom: 20 },
+
+  // Performance card
   performanceCard: {
-    width: "100%",
-    height: 180,
+    backgroundColor: "#eef2ff",
     borderRadius: 12,
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 6,
-    elevation: 3,
+    padding: 16,
+    marginTop:30,
+    marginBottom: 20,
+    borderWidth: 1,
+    borderColor: "#c7d2fe",
   },
+  headerRow: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 12,
+  },
+  nameText: { fontSize: 16, fontWeight: "600", color: "#111827" },
+  idText: { fontSize: 12, color: "#6b7280", fontWeight: "500" },
+  pointsContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    backgroundColor: "white",
+    borderRadius: 10,
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    alignItems: "center",
+    marginBottom: 16,
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
+  },
+  pointsLabel: { fontSize: 14, fontWeight: "500", color: "#111827" },
+  pointsBadge: {
+    backgroundColor: "#2563eb",
+    paddingVertical: 4,
+    paddingHorizontal: 12,
+    borderRadius: 20,
+  },
+  pointsText: { color: "white", fontWeight: "600" },
+  statsRow: {
+    flexDirection: "row",
+    justifyContent: "space-around",
+  },
+  statBox: { alignItems: "center" },
+  statValue: { fontSize: 16, fontWeight: "700" },
+  statLabel: { fontSize: 12, color: "#6b7280" },
+
+  // Department grid
   grid: {
     flexDirection: "row",
     flexWrap: "wrap",
@@ -174,21 +220,27 @@ const styles = StyleSheet.create({
   deptCard: {
     width: "47%",
     backgroundColor: "white",
-    borderRadius: 12,
+    borderRadius: 10,
     marginBottom: 16,
+    borderWidth: 1,
+    borderColor: "#e5e7eb",
     overflow: "hidden",
-    shadowColor: "#000",
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 2,
   },
-  deptImage: { width: "100%", height: 100 },
-  deptText: {
-    textAlign: "center",
+  deptImage: {
+    width: "100%",
+    height: 120,
+  },
+  deptInfo: {
     paddingVertical: 10,
-    fontWeight: "600",
-    color: "#333",
+    alignItems: "center",
   },
+  deptText: {
+    fontWeight: "600",
+    fontSize: 14,
+    color: "#111827",
+  },
+
+  // Toast
   toast: {
     position: "absolute",
     bottom: 20,
@@ -198,10 +250,6 @@ const styles = StyleSheet.create({
     padding: 12,
     borderRadius: 10,
     alignItems: "center",
-    shadowColor: "#000",
-    shadowOpacity: 0.2,
-    shadowRadius: 4,
-    elevation: 4,
   },
   toastText: { color: "white", fontWeight: "bold" },
 });

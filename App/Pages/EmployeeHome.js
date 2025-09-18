@@ -116,12 +116,20 @@ export default function EmployeeHome({ navigation }) {
             <Text style={styles.value}>Working for: {currentProblem.workingFor}</Text>
           </View>
 
-          {/* Button */}
+          {/* Button: Progress */}
           <TouchableOpacity
             style={styles.cardButton}
             onPress={() => navigation.navigate("SpecificIssueEmployee")}
           >
-            <Text style={styles.cardButtonText}>Details</Text>
+            <Text style={styles.cardButtonText}>Progress</Text>
+          </TouchableOpacity>
+
+          {/* Button: Report */}
+          <TouchableOpacity
+            style={[styles.cardButton, { backgroundColor: "#1E3A8A" }]}
+            onPress={() => navigation.navigate("EmployeeReport")}
+          >
+            <Text style={styles.cardButtonText}>Report</Text>
           </TouchableOpacity>
         </View>
 

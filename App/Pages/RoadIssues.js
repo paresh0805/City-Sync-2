@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -6,121 +6,63 @@ import {
   TouchableOpacity,
   Image,
   FlatList,
+  ActivityIndicator,
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 
-const posts = [
-  {
-    id: "1",
-    username: "🔥 civic_hero_2024",
-    avatar: "https://i.pravatar.cc/150?img=1",
-    points: "2,847 pts",
-    time: "2h",
-    location: "Downtown, Main Street",
-    tag: "Garbage",
-    image: require("../assets/1.jpeg"),
-    likes: 87,
-    comments: 23,
-    progress: 25,
-    description:
-      "Massive garbage dump blocking the entire sidewalk on Main Street. This has been here for over a week! 😤 #CivicDuty #CleanStreets",
-  },
-  {
-    id: "2",
-    username: "🔥 roadwatch_community",
-    avatar: "https://i.pravatar.cc/150?img=2",
-    points: "1,532 pts",
-    time: "5h",
-    location: "Green Park",
-    tag: "Roads",
-    image: require("../assets/2.jpeg"),
-    likes: 120,
-    comments: 45,
-    progress: 50,
-    description:
-      "Huge pothole causing accidents on Elm Avenue. Multiple cars have damaged their tires here. City needs to fix this ASAP! 🚗💥",
-  },
-  {
-    id: "3",
-    username: "🔥 road_savior",
-    avatar: "https://i.pravatar.cc/150?img=3",
-    points: "3,201 pts",
-    time: "1d",
-    location: "Central Avenue",
-    tag: "Lighting",
-    image: require("../assets/3.jpg"),
-    likes: 200,
-    comments: 67,
-    progress: 75,
-    description:
-      "Street light has been broken for months. This area is completely dark at night, making it unsafe for pedestrians. 🌙💡",
-  },
-  {
-    id: "4",
-    username: "🔥 city_watcher",
-    avatar: "https://i.pravatar.cc/150?img=4",
-    points: "980 pts",
-    time: "3d",
-    location: "Riverfront",
-    tag: "Vandalism",
-    image: require("../assets/4.avif"),
-    likes: 45,
-    comments: 12,
-    progress: 10,
-    description:
-      "Fresh graffiti covering the entire community center wall. This beautiful building deserves better! Let's organize a cleanup day 🎨🚫",
-  },
-];
-
 const tagColors = {
-  Garbage: "orange",
-  Roads: "red",
-  Lighting: "blue",
-  Vandalism: "purple",
+  "Road Issues": "red",
+  "Waste Management": "orange",
+  "Lighting": "blue",
+  "Vandalism": "purple",
 };
 
 export default function RoadIssues() {
-  const renderPost = ({ item }) => (
+  const [issues, setIssues] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetch("https://backend-production-e436.up.railway.app/issue?category=Road Issues")
+      .then((res) => res.json())
+      .then((data) => {
+        if (data.success) {
+          setIssues(data.issues);
+        }
+      })
+      .catch((err) => console.error("Fetch Road Issues Error:", err))
+      .finally(() => setLoading(false));
+  }, []);
+
+  const renderIssue = ({ item }) => (
     <View style={styles.card}>
       {/* Post Header */}
       <View style={styles.postHeader}>
-        <Image source={{ uri: item.avatar }} style={styles.avatarSmall} />
+        <Image
+          source={{ uri: "https://i.pravatar.cc/150?u=" + item.citizenId }}
+          style={styles.avatarSmall}
+        />
         <View style={{ flex: 1 }}>
-          <Text style={styles.username}>{item.username}</Text>
-          <Text style={styles.meta}>
-            {item.points} · {item.time}
-          </Text>
+          <Text style={styles.username}>Citizen {item.citizenId}</Text>
+          <Text style={styles.meta}>{item.status.toUpperCase()}</Text>
           <Text style={styles.location}>{item.location}</Text>
         </View>
       </View>
 
       {/* Post Image */}
       <View style={styles.imageContainer}>
-        <Image source={item.image} style={styles.postImage} />
+        <Image
+          source={{ uri: `https://backend-production-e436.up.railway.app${item.imageUrl}` }}
+          style={styles.postImage}
+        />
         <View
           style={[
             styles.tag,
-            { backgroundColor: tagColors[item.tag] || "gray" },
+            { backgroundColor: tagColors[item.category] || "gray" },
           ]}
         >
-          <Text style={styles.tagText}>{item.tag}</Text>
+          <Text style={styles.tagText}>{item.category}</Text>
         </View>
-      </View>
-
-      {/* Actions */}
-      <View style={styles.actions}>
-        <TouchableOpacity style={styles.actionBtn}>
-          <Ionicons name="heart-outline" size={22} color="#333" />
-          <Text style={styles.actionText}>{item.likes}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.actionBtn}>
-          <Ionicons name="chatbubble-outline" size={22} color="#333" />
-          <Text style={styles.actionText}>{item.comments}</Text>
-        </TouchableOpacity>
-        <TouchableOpacity style={styles.actionBtn}>
-          <Ionicons name="share-social-outline" size={22} color="#333" />
-        </TouchableOpacity>
       </View>
 
       {/* Progress Bar */}
@@ -129,12 +71,12 @@ export default function RoadIssues() {
           <View
             style={[
               styles.progressBarFill,
-              { width: `${item.progress}%` },
+              { width: item.status === "pending" ? "25%" : "100%" },
             ]}
           />
         </View>
         <Text style={styles.progressText}>
-          Resolution Progress {item.progress}%
+          Resolution Progress: {item.status === "pending" ? "25%" : "100%"}
         </Text>
       </View>
 
@@ -162,14 +104,18 @@ export default function RoadIssues() {
         </View>
       </View>
 
-      {/* Posts List */}
-      <FlatList
-        data={posts}
-        renderItem={renderPost}
-        keyExtractor={(item) => item.id}
-        contentContainerStyle={styles.container}
-        showsVerticalScrollIndicator={false}
-      />
+      {/* Loader or List */}
+      {loading ? (
+        <ActivityIndicator size="large" color="#000" style={{ marginTop: 20 }} />
+      ) : (
+        <FlatList
+          data={issues}
+          renderItem={renderIssue}
+          keyExtractor={(item) => item.id}
+          contentContainerStyle={styles.container}
+          showsVerticalScrollIndicator={false}
+        />
+      )}
     </SafeAreaView>
   );
 }
@@ -261,19 +207,6 @@ const styles = StyleSheet.create({
     color: "#fff",
     fontSize: 12,
     fontWeight: "bold",
-  },
-  actions: {
-    flexDirection: "row",
-    marginTop: 8,
-  },
-  actionBtn: {
-    flexDirection: "row",
-    alignItems: "center",
-    marginRight: 15,
-  },
-  actionText: {
-    marginLeft: 5,
-    fontSize: 14,
   },
   progressBox: {
     marginTop: 8,

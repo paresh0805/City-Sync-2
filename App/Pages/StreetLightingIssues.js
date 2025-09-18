@@ -18,19 +18,23 @@ const tagColors = {
   "Vandalism": "purple",
 };
 
-export default function RoadIssues() {
+export default function StreetLightingIssues() {
   const [issues, setIssues] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetch("https://backend-production-e436.up.railway.app/issue?category=Street Lighting")
+    fetch(
+      "https://backend-production-e436.up.railway.app/issue?category=Street%20Lighting"
+    )
       .then((res) => res.json())
       .then((data) => {
         if (data.success) {
           setIssues(data.issues);
         }
       })
-      .catch((err) => console.error("Fetch Street Lighting Issues Error:", err))
+      .catch((err) =>
+        console.error("Fetch Street Lighting Issues Error:", err)
+      )
       .finally(() => setLoading(false));
   }, []);
 
@@ -52,7 +56,9 @@ export default function RoadIssues() {
       {/* Post Image */}
       <View style={styles.imageContainer}>
         <Image
-          source={{ uri: `https://backend-production-e436.up.railway.app${item.imageUrl}` }}
+          source={{
+            uri: `https://backend-production-e436.up.railway.app${item.imageUrl}`,
+          }}
           style={styles.postImage}
         />
         <View
@@ -111,7 +117,7 @@ export default function RoadIssues() {
         <FlatList
           data={issues}
           renderItem={renderIssue}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item) => item.id.toString()}
           contentContainerStyle={styles.container}
           showsVerticalScrollIndicator={false}
         />
