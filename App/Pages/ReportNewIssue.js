@@ -259,4 +259,79 @@
 //   },
 //   submitText: { color: "#fff", fontSize: 16, fontWeight: "bold" },
 // });
+const handleSubmit = async () => {
+  if (!issueType || !description || !location || !image) {
+    alert("Please fill all fields and add an image!");
+    return;
+  }
+
+  // 1. Prepare FormData for prediction API
+  let predictForm = new FormData();
+  predictForm.append("image", {
+    uri: image,
+    name: "report.jpg",
+    type: "image/jpeg",
+  });
+
+  try {
+    // 2. Call /predict endpoint to get prediction
+    const predictResponse = await fetch("https://web-production-ff28.up.railway.app/predict", {
+      method: "POST",
+      body: predictForm,
+      // ❌ Don't set Content-Type here, fetch will handle it
+    });
+
+    const predictData = await predictResponse.json();
+
+    if (!predictResponse.ok || !predictData.success) {
+      alert("Prediction failed: " + (predictData.message || "Unknown error"));
+      return;
+    }
+
+    const predictedCategory = predictData.label;
+
+    // 3. Submit report to backend
+    let formData = new FormData();
+    formData.append("description", description);
+    formData.append("location", location);
+    formData.append("citizenId", "12345"); // replace with actual logged-in user ID
+    formData.append("category", issueType || predictedCategory); // use dropdown or ML prediction
+    formData.append("image", {
+      uri: image,
+      name: "report.jpg",
+      type: "image/jpeg",
+    });
+
+    const response = await fetch("https://backend-production-e436.up.railway.app/issue", {
+      method: "POST",
+      body: formData,
+    });
+
+    const text = await response.text();
+    console.log("📩 Raw server response:", text);
+
+    let data;
+    try {
+      data = JSON.parse(text);
+    } catch (err) {
+      throw new Error("Server did not return JSON");
+    }
+
+    if (response.ok && data.success) {
+      alert("✅ Issue reported successfully!");
+      console.log("Server response:", data);
+
+      // Clear form
+      setIssueType("");
+      setDescription("");
+      setImage(null);
+    } else {
+      alert("❌ Failed: " + (data.message || "Unknown error"));
+    }
+  } catch (error) {
+    console.error("Error submitting report:", error);
+    alert("Something went wrong. Please try again.");
+  }
+};
+
 
