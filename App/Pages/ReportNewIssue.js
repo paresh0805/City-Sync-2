@@ -372,6 +372,42 @@ export default function ReportNewIssue() {
     alert("Something went wrong. Please try again.");
   }
 };
+  const handlePredict = async () => {
+  if (!image) {
+    alert("Please select an image!");
+    return;
+  }
+
+  let formData = new FormData();
+  formData.append("image", {
+    uri: image,
+    name: "report.jpg",
+    type: "image/jpeg",
+  });
+
+  try {
+    const response = await fetch("http://your-backend-url/predict", {
+      method: "POST",
+      body: formData,
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    const data = await response.json();
+
+    if (response.ok && data.success) {
+      alert(`Prediction: ${data.label} (Confidence: ${(data.confidence * 100).toFixed(2)}%)`);
+      console.log("Prediction response:", data);
+    } else {
+      alert("Prediction failed: " + (data.message || "Unknown error"));
+    }
+  } catch (error) {
+    console.error("Prediction error:", error);
+    alert("Something went wrong with prediction.");
+  }
+};
+
 
 
 
