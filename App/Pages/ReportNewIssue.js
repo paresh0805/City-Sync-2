@@ -151,11 +151,12 @@ export default function ReportNewIssue() {
           onValueChange={(itemValue) => setIssueType(itemValue)}
         >
           <Picker.Item label="Select issue category" value="" />
-          <Picker.Item label="Pothole" value="Pothole" />
-          <Picker.Item label="Broken Streetlight" value="Broken Streetlight" />
-          <Picker.Item label="Overflowing Trash" value="Overflowing Trash" />
-          <Picker.Item label="Graffiti" value="Graffiti" />
-          <Picker.Item label="Sidewalk Issue" value="Sidewalk Issue" />
+          <Picker.Item label="Road Issue" value="Road Issues" />
+          <Picker.Item label="Street Lighting" value="Street Lighting" />
+          <Picker.Item label="Waste/Garbage" value="Waste Management" />
+          <Picker.Item label="Vandalism" value="Vandalism" />
+          <Picker.Item label="Parks & Trees" value="Parks&Trees" />
+          <Picker.Item label="SideWalk/Infrastructure" value="Infrastructure" />
           <Picker.Item label="Other" value="Other" />
         </Picker>
       </View>
