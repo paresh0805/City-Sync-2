@@ -72,7 +72,7 @@ export default function ReportNewIssue() {
     formData.append("description", description);
     formData.append("location", location);
     formData.append("citizenId", "12345"); // 🔹 Replace with actual logged-in user ID
-    formData.append("issueType", issueType);
+    formData.append("category", issueType);
 
     formData.append("image", {
       uri: image,
