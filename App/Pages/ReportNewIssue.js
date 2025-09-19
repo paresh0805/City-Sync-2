@@ -82,7 +82,7 @@ export default function ReportNewIssue() {
 
     try {
       const response = await fetch(
-        "https://web-production-ff28.up.railway.app/issue",
+        "https://backend-production-e436.up.railway.app/issue",
         {
           method: "POST",
           body: formData,
