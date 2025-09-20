@@ -6,11 +6,12 @@ import {
   TouchableOpacity,
   StyleSheet,
   ImageBackground,
-  Platform,Alert,
+  Platform,
+  Alert,
 } from "react-native";
 import { FontAwesome } from "@expo/vector-icons";
 
-const Citizen = ({navigation}) => {
+const Citizen = ({ navigation }) => {
   const [isPhoneLogin, setIsPhoneLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -20,48 +21,43 @@ const Citizen = ({navigation}) => {
   const handleLogin = async () => {
     try {
       if (
-            (isPhoneLogin && !phone) ||
-            (!isPhoneLogin && !email) ||
-            !password
-          ) {
-            Alert.alert("Error", "All fields are required");
-            return;
-          }
+        (isPhoneLogin && !phone) ||
+        (!isPhoneLogin && !email) ||
+        !password
+      ) {
+        Alert.alert("Error", "All fields are required");
+        return;
+      }
       // Choose payload based on toggle
       const payload = isPhoneLogin
         ? { phone, password }
         : { email, password };
 
       const response = await fetch(
-            "https://web-production-ff28.up.railway.app/login",
-            {
-              method: "POST",
-              headers: { "Content-Type": "application/json" },
-              body: JSON.stringify(payload),
-            }
-          );
-      
-          const result = await response.json();
-      
-          if (result.success) {
-            navigation.navigate("CitizenHome"); // ✅ success → next page
-          } else {
-            Alert.alert("Login Failed", result.message || "Invalid credentials");
-          }
-        } catch (error) {
-          console.error(error);
-          Alert.alert("Error", "Something went wrong");
+        "https://web-production-ff28.up.railway.app/login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
         }
+      );
+
+      const result = await response.json();
+
+      if (result.success) {
+        navigation.navigate("CitizenHome"); // ✅ success → next page
+      } else {
+        Alert.alert("Login Failed", result.message || "Invalid credentials");
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert("Error", "Something went wrong");
+    }
   };
-
-
-
-
-
 
   return (
     <ImageBackground
-      source={require("../assets/bg.jpeg")} // <-- add your background image here
+      source={require("../assets/bg.jpeg")} // <-- background image
       style={styles.background}
       resizeMode="cover"
     >
@@ -111,7 +107,7 @@ const Citizen = ({navigation}) => {
           />
         )}
 
-        {/* Password Input (fixed alignment) */}
+        {/* Password Input */}
         <View style={styles.passwordContainer}>
           <TextInput
             style={styles.passwordInput}
@@ -121,7 +117,6 @@ const Citizen = ({navigation}) => {
             value={password}
             onChangeText={setPassword}
             autoCapitalize="none"
-            // Android needs this to vertically center placeholder/text
             textAlignVertical={Platform.OS === "android" ? "center" : "auto"}
           />
           <TouchableOpacity onPress={() => setSecureText(!secureText)}>
@@ -130,13 +125,21 @@ const Citizen = ({navigation}) => {
         </View>
 
         {/* Login Button */}
-        <TouchableOpacity style={styles.loginButton} onPress={()=>navigation.navigate('CitizenHome')}>
+        <TouchableOpacity
+          style={styles.loginButton}
+          onPress={() => navigation.navigate("CitizenHome")}
+        >
           <Text style={styles.loginText}>Login</Text>
         </TouchableOpacity>
 
         {/* Forgot Password */}
         <TouchableOpacity>
           <Text style={styles.forgotPassword}>Forgot your password?</Text>
+        </TouchableOpacity>
+
+        {/* Don't have an account */}
+        <TouchableOpacity onPress={() => navigation.navigate("CitizenRegister")}>
+          <Text style={styles.registerText}>Don’t have an account?</Text>
         </TouchableOpacity>
 
         {/* Or sign in with */}
@@ -209,23 +212,21 @@ const styles = StyleSheet.create({
     backgroundColor: "white",
     fontSize: 16,
   },
-
-  /* Password container improvements: fixed height + centered children */
   passwordContainer: {
     flexDirection: "row",
-    alignItems: "center", // vertical center
+    alignItems: "center",
     borderWidth: 1,
     borderColor: "green",
     borderRadius: 25,
     paddingHorizontal: 15,
-    height: 50, // fixed height for consistent vertical alignment
+    height: 50,
     marginBottom: 15,
     backgroundColor: "white",
   },
   passwordInput: {
     flex: 1,
-    height: "100%", // fill the container height so placeholder is vertically centered
-    padding: 0, // remove extra vertical padding (handled by container height)
+    height: "100%",
+    padding: 0,
     margin: 0,
     fontSize: 16,
   },
@@ -250,7 +251,13 @@ const styles = StyleSheet.create({
   forgotPassword: {
     color: "green",
     textAlign: "center",
+    marginBottom: 10,
+  },
+  registerText: {
+    color: "#001F54",
+    textAlign: "center",
     marginBottom: 20,
+    fontWeight: "600",
   },
   orText: {
     textAlign: "center",

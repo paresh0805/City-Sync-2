@@ -14,7 +14,7 @@ import { SafeAreaView } from "react-native-safe-area-context"; // ✅ new import
 import { FontAwesome } from "@expo/vector-icons";
 import DropDownPicker from "react-native-dropdown-picker";
 
-const Employee = ({navigation}) => {
+const Employee = ({ navigation }) => {
   const [isPhoneLogin, setIsPhoneLogin] = useState(true);
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
@@ -30,43 +30,42 @@ const Employee = ({navigation}) => {
   ]);
 
   const handleLogin = async () => {
-  try {
-    if (
-      (isPhoneLogin && !phone) ||
-      (!isPhoneLogin && !email) ||
-      !password ||
-      !department
-    ) {
-      Alert.alert("Error", "All fields are required");
-      return;
-    }
-
-    const payload = isPhoneLogin
-      ? { phone, password, department }
-      : { email, password, department };
-
-    const response = await fetch(
-      "https://web-production-ff28.up.railway.app/login",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
+    try {
+      if (
+        (isPhoneLogin && !phone) ||
+        (!isPhoneLogin && !email) ||
+        !password ||
+        !department
+      ) {
+        Alert.alert("Error", "All fields are required");
+        return;
       }
-    );
 
-    const result = await response.json();
+      const payload = isPhoneLogin
+        ? { phone, password, department }
+        : { email, password, department };
 
-    if (result.success) {
-      navigation.navigate("EmployeeHome"); // ✅ success → next page
-    } else {
-      Alert.alert("Login Failed", result.message || "Invalid credentials");
+      const response = await fetch(
+        "https://web-production-ff28.up.railway.app/login",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        }
+      );
+
+      const result = await response.json();
+
+      if (result.success) {
+        navigation.navigate("EmployeeHome"); // ✅ success → next page
+      } else {
+        Alert.alert("Login Failed", result.message || "Invalid credentials");
+      }
+    } catch (error) {
+      console.error(error);
+      Alert.alert("Error", "Something went wrong");
     }
-  } catch (error) {
-    console.error(error);
-    Alert.alert("Error", "Something went wrong");
-  }
-};
-
+  };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
@@ -164,13 +163,21 @@ const Employee = ({navigation}) => {
             />
 
             {/* Login Button */}
-            <TouchableOpacity style={styles.loginButton} onPress={()=>navigation.navigate('EmployeeDashboard')}>
+            <TouchableOpacity
+              style={styles.loginButton}
+              onPress={() => navigation.navigate("EmployeeDashboard")}
+            >
               <Text style={styles.loginText}>Login</Text>
             </TouchableOpacity>
 
             {/* Forgot Password */}
             <TouchableOpacity>
               <Text style={styles.forgotPassword}>Forgot your password?</Text>
+            </TouchableOpacity>
+
+            {/* Don't have an account */}
+            <TouchableOpacity onPress={() => navigation.navigate("EmployeeRegister")}>
+              <Text style={styles.registerText}>Don’t have an account?</Text>
             </TouchableOpacity>
 
             {/* Or sign in with */}
@@ -282,7 +289,13 @@ const styles = StyleSheet.create({
   forgotPassword: {
     color: "green",
     textAlign: "center",
+    marginBottom: 10,
+  },
+  registerText: {
+    color: "#001F54",
+    textAlign: "center",
     marginBottom: 20,
+    fontWeight: "600",
   },
   orText: { textAlign: "center", color: "#666", marginBottom: 10 },
   socialContainer: {

@@ -102,7 +102,11 @@ const CitizenHome = ({ navigation }) => {
             resizeMode="contain"
           />
           <View style={styles.rightSection}>
-            <Text style={styles.points}>⭐ 156</Text>
+            {/* ⭐ Points as Clickable Button */}
+            <TouchableOpacity onPress={() => navigation.navigate('Leaderboard')}>
+              <Text style={styles.points}>⭐ 156</Text>
+            </TouchableOpacity>
+
             <View style={styles.avatar}>
               <Text style={{ color: "#fff", fontWeight: "bold" }}>S</Text>
             </View>

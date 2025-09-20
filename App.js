@@ -14,6 +14,9 @@ import WasteIssues from './App/Pages/WasteIssues.js';
 import SpecificIssueEmployee from './App/Pages/SpecificIssueEmployee.js';
 import EmployeeDashboard from './App/Pages/EmployeeDashboard.js';
 import EmployeeReport from './App/Pages/EmployeeReport.js';
+import Leaderboard from './App/Pages/Leaderboard.js';
+import CitizenRegister from './App/Pages/CitizenRegister.js';
+import EmployeeRegister from './App/Pages/EmployeeRegister.js';
 
 
 const Stack = createNativeStackNavigator();
@@ -34,6 +37,9 @@ const App = () => {
         <Stack.Screen name="SpecificIssueEmployee" component={SpecificIssueEmployee} />
         <Stack.Screen name="EmployeeDashboard" component={EmployeeDashboard} />
         <Stack.Screen name="EmployeeReport" component={EmployeeReport} />
+        <Stack.Screen name="Leaderboard" component={Leaderboard} />
+        <Stack.Screen name="EmployeeRegister" component={EmployeeRegister} />
+        <Stack.Screen name="CitizenRegister" component={CitizenRegister} />
       </Stack.Navigator>
     </NavigationContainer>
   );
