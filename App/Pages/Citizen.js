@@ -28,7 +28,6 @@ const Citizen = ({ navigation }) => {
         Alert.alert("Error", "All fields are required");
         return;
       }
-      // Choose payload based on toggle
       const payload = isPhoneLogin
         ? { phone, password }
         : { email, password };
@@ -45,7 +44,7 @@ const Citizen = ({ navigation }) => {
       const result = await response.json();
 
       if (result.success) {
-        navigation.navigate("CitizenHome"); // ✅ success → next page
+        navigation.navigate("CitizenHome");
       } else {
         Alert.alert("Login Failed", result.message || "Invalid credentials");
       }
@@ -57,7 +56,7 @@ const Citizen = ({ navigation }) => {
 
   return (
     <ImageBackground
-      source={require("../assets/bg.jpeg")} // <-- background image
+      source={require("../assets/bg.jpeg")}
       style={styles.background}
       resizeMode="cover"
     >
@@ -125,10 +124,7 @@ const Citizen = ({ navigation }) => {
         </View>
 
         {/* Login Button */}
-        <TouchableOpacity
-          style={styles.loginButton}
-          onPress={() => navigation.navigate("CitizenHome")}
-        >
+        <TouchableOpacity style={styles.loginButton} onPress={()=>navigation.navigate('CitizenHome')}>
           <Text style={styles.loginText}>Login</Text>
         </TouchableOpacity>
 
@@ -145,13 +141,18 @@ const Citizen = ({ navigation }) => {
         {/* Or sign in with */}
         <Text style={styles.orText}>Or sign in with</Text>
 
+        {/* Google & Facebook Buttons */}
         <View style={styles.socialContainer}>
-          <TouchableOpacity style={styles.socialButton}>
-            <FontAwesome name="google" size={20} />
+          <TouchableOpacity
+            style={[styles.socialButton, { borderColor: "#DB4437" }]}
+          >
+            <FontAwesome name="google" size={20} color="#DB4437" />
             <Text style={styles.socialText}> Google</Text>
           </TouchableOpacity>
-          <TouchableOpacity style={styles.socialButton}>
-            <FontAwesome name="facebook" size={20} />
+          <TouchableOpacity
+            style={[styles.socialButton, { borderColor: "#4267B2" }]}
+          >
+            <FontAwesome name="facebook" size={20} color="#4267B2" />
             <Text style={styles.socialText}> Facebook</Text>
           </TouchableOpacity>
         </View>
@@ -161,28 +162,15 @@ const Citizen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  background: {
-    flex: 1,
-    justifyContent: "center",
-  },
+  background: { flex: 1, justifyContent: "center" },
   container: {
     padding: 20,
     backgroundColor: "rgba(255,255,255,0.8)",
     margin: 20,
     borderRadius: 15,
   },
-  title: {
-    fontSize: 26,
-    fontWeight: "bold",
-    textAlign: "center",
-    marginBottom: 5,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: "#666",
-    textAlign: "center",
-    marginBottom: 20,
-  },
+  title: { fontSize: 26, fontWeight: "bold", textAlign: "center", marginBottom: 5 },
+  subtitle: { fontSize: 14, color: "#666", textAlign: "center", marginBottom: 20 },
   tabContainer: {
     flexDirection: "row",
     marginBottom: 20,
@@ -191,15 +179,8 @@ const styles = StyleSheet.create({
     borderRadius: 25,
     overflow: "hidden",
   },
-  tab: {
-    flex: 1,
-    paddingVertical: 10,
-    alignItems: "center",
-    backgroundColor: "white",
-  },
-  activeTab: {
-    backgroundColor: "#001F54",
-  },
+  tab: { flex: 1, paddingVertical: 10, alignItems: "center", backgroundColor: "white" },
+  activeTab: { backgroundColor: "#001F54" },
   activeText: { color: "white", fontWeight: "600" },
   inactiveText: { color: "#666", fontWeight: "600" },
   input: {
@@ -223,65 +204,24 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     backgroundColor: "white",
   },
-  passwordInput: {
-    flex: 1,
-    height: "100%",
-    padding: 0,
-    margin: 0,
-    fontSize: 16,
-  },
-  showText: {
-    color: "#1A2B76",
-    fontWeight: "600",
-    paddingLeft: 12,
-    paddingVertical: 6,
-  },
-  loginButton: {
-    backgroundColor: "#001F54",
-    paddingVertical: 12,
-    borderRadius: 25,
-    alignItems: "center",
-    marginBottom: 10,
-  },
-  loginText: {
-    color: "white",
-    fontSize: 16,
-    fontWeight: "bold",
-  },
-  forgotPassword: {
-    color: "green",
-    textAlign: "center",
-    marginBottom: 10,
-  },
-  registerText: {
-    color: "#001F54",
-    textAlign: "center",
-    marginBottom: 20,
-    fontWeight: "600",
-  },
-  orText: {
-    textAlign: "center",
-    color: "#666",
-    marginBottom: 10,
-  },
-  socialContainer: {
-    flexDirection: "row",
-    justifyContent: "space-evenly",
-  },
+  passwordInput: { flex: 1, height: "100%", padding: 0, margin: 0, fontSize: 16 },
+  showText: { color: "#1A2B76", fontWeight: "600", paddingLeft: 12, paddingVertical: 6 },
+  loginButton: { backgroundColor: "#001F54", paddingVertical: 12, borderRadius: 25, alignItems: "center", marginBottom: 10 },
+  loginText: { color: "white", fontSize: 16, fontWeight: "bold" },
+  forgotPassword: { color: "green", textAlign: "center", marginBottom: 10 },
+  registerText: { color: "#001F54", textAlign: "center", marginBottom: 13, fontWeight: "600" },
+  orText: { textAlign: "center", color: "#666", marginBottom: 10 },
+  socialContainer: { flexDirection: "row", justifyContent: "space-evenly" },
   socialButton: {
     flexDirection: "row",
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#ccc",
     paddingHorizontal: 15,
     paddingVertical: 8,
     borderRadius: 25,
     backgroundColor: "white",
   },
-  socialText: {
-    fontSize: 14,
-    marginLeft: 5,
-  },
+  socialText: { fontSize: 14, marginLeft: 5 },
 });
 
 export default Citizen;

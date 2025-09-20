@@ -10,7 +10,7 @@ import {
   Alert,
   KeyboardAvoidingView,
 } from "react-native";
-import { SafeAreaView } from "react-native-safe-area-context"; // ✅ new import
+import { SafeAreaView } from "react-native-safe-area-context";
 import { FontAwesome } from "@expo/vector-icons";
 import DropDownPicker from "react-native-dropdown-picker";
 
@@ -57,7 +57,7 @@ const Employee = ({ navigation }) => {
       const result = await response.json();
 
       if (result.success) {
-        navigation.navigate("EmployeeHome"); // ✅ success → next page
+        navigation.navigate("EmployeeHome");
       } else {
         Alert.alert("Login Failed", result.message || "Invalid credentials");
       }
@@ -165,7 +165,7 @@ const Employee = ({ navigation }) => {
             {/* Login Button */}
             <TouchableOpacity
               style={styles.loginButton}
-              onPress={() => navigation.navigate("EmployeeDashboard")}
+              onPress={handleLogin}
             >
               <Text style={styles.loginText}>Login</Text>
             </TouchableOpacity>
@@ -183,13 +183,18 @@ const Employee = ({ navigation }) => {
             {/* Or sign in with */}
             <Text style={styles.orText}>Or sign in with</Text>
 
+            {/* Social Buttons */}
             <View style={styles.socialContainer}>
-              <TouchableOpacity style={styles.socialButton}>
-                <FontAwesome name="google" size={20} />
+              <TouchableOpacity
+                style={[styles.socialButton, { borderColor: "#DB4437" }]}
+              >
+                <FontAwesome name="google" size={20} color="#DB4437" />
                 <Text style={styles.socialText}> Google</Text>
               </TouchableOpacity>
-              <TouchableOpacity style={styles.socialButton}>
-                <FontAwesome name="facebook" size={20} />
+              <TouchableOpacity
+                style={[styles.socialButton, { borderColor: "#4267B2" }]}
+              >
+                <FontAwesome name="facebook" size={20} color="#4267B2" />
                 <Text style={styles.socialText}> Facebook</Text>
               </TouchableOpacity>
             </View>
@@ -294,25 +299,25 @@ const styles = StyleSheet.create({
   registerText: {
     color: "#001F54",
     textAlign: "center",
-    marginBottom: 20,
+    marginBottom: 13,
     fontWeight: "600",
   },
   orText: { textAlign: "center", color: "#666", marginBottom: 10 },
   socialContainer: {
     flexDirection: "row",
     justifyContent: "space-evenly",
+    marginBottom: 15,
   },
   socialButton: {
     flexDirection: "row",
     alignItems: "center",
     borderWidth: 1,
-    borderColor: "#ccc",
     paddingHorizontal: 15,
     paddingVertical: 8,
     borderRadius: 25,
     backgroundColor: "white",
   },
-  socialText: { fontSize: 14, marginLeft: 5 },
+  socialText: { fontSize: 14, marginLeft: 5},
 });
 
 export default Employee;
