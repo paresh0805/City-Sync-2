@@ -68,7 +68,7 @@ export default function ReportNewIssue() {
       return;
     }
     let model_input=new FormData();
-    model_input.append("image", {
+    model_input.append("file", {
       uri: image,
       name: "report.jpg",
       type: "image/jpeg",
