@@ -61,12 +61,16 @@ const CitizenHome = ({ navigation }) => {
   useEffect(() => {
     if (pendingIssues.length === 0) return;
     const interval = setInterval(() => {
-      const nextIndex = currentIndex < pendingIssues.length - 1 ? currentIndex + 1 : 0;
-      setCurrentIndex(nextIndex);
-      flatListRef.current.scrollToIndex({ index: nextIndex });
+      setCurrentIndex((prev) => {
+        const nextIndex = prev < pendingIssues.length - 1 ? prev + 1 : 0;
+        if (flatListRef.current) {
+          flatListRef.current.scrollToIndex({ index: nextIndex });
+        }
+        return nextIndex;
+      });
     }, 3000);
     return () => clearInterval(interval);
-  }, [currentIndex, pendingIssues]);
+  }, [pendingIssues]);
 
   const handleNext = () => {
     if (currentIndex < pendingIssues.length - 1) {
@@ -171,7 +175,9 @@ const CitizenHome = ({ navigation }) => {
           <FlatList
             ref={flatListRef}
             data={pendingIssues}
-            keyExtractor={(item) => item.id}
+            keyExtractor={(item, index) =>
+              item.id ? item.id.toString() : index.toString()
+            }
             horizontal
             pagingEnabled
             showsHorizontalScrollIndicator={false}

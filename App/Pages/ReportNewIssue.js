@@ -67,6 +67,24 @@ export default function ReportNewIssue() {
       alert("Please fill all fields and add an image!");
       return;
     }
+    let model_input=new FormData();
+    model_input.append("image", {
+      uri: image,
+      name: "report.jpg",
+      type: "image/jpeg",
+    });
+    try{
+      const model_output=await fetch("https://web-production-79636.up.railway.app/predict",{
+        method: "POST",
+        body: model_input
+      });
+      const text1 = await model_output.text();
+      console.log("📩 Raw server response:", text1);
+    }
+    catch (error) {
+      console.error("Model Error:", error);
+      alert("Something went wrong. Please try again.");
+    }
 
     let formData = new FormData();
     formData.append("description", description);
