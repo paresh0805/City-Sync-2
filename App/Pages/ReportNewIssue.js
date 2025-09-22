@@ -81,7 +81,6 @@ export default function ReportNewIssue() {
       const text1 = await model_output.text();
       const data1=JSON.parse(text1);
       console.log("📩 Raw server response:", text1);
-      let data1;
       try {
         data1 = JSON.parse(text1);
       } catch (err) {
@@ -96,13 +95,11 @@ export default function ReportNewIssue() {
     let formData = new FormData();
     formData.append("description", data1.description);
     formData.append("location", location);
-<<<<<<< HEAD
     formData.append("citizenId", "12345"); // 🔹 Replace with actual logged-in user ID
     formData.append("category", data1.prediction_label);
-=======
+
     formData.append("citizenId", "68cf34cf1fce948129a190c6"); // 🔹 Replace with actual logged-in user ID
     formData.append("category", issueType);
->>>>>>> ff2c5a08f95ff74f89ff3d48834c161366907557
 
     formData.append("image", {
       uri: image,
