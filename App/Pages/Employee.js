@@ -165,7 +165,7 @@ const Employee = ({ navigation }) => {
             {/* Login Button */}
             <TouchableOpacity
               style={styles.loginButton}
-              onPress={()=>{navigation.navigate('EmployeeDashboard')}}
+              onPress={()=>navigation.navigate('EmployeeDashboard')}
             >
               <Text style={styles.loginText}>Login</Text>
             </TouchableOpacity>

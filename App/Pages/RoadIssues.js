@@ -3,12 +3,10 @@ import {
   View,
   Text,
   StyleSheet,
-  TouchableOpacity,
   Image,
   FlatList,
   ActivityIndicator,
 } from "react-native";
-import { Ionicons } from "@expo/vector-icons";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 const tagColors = {
@@ -34,8 +32,8 @@ export default function RoadIssues() {
       .finally(() => setLoading(false));
   }, []);
 
-  const renderIssue = ({ item }) => (
-    <View style={styles.card}>
+  const renderIssue = ({ item, index }) => (
+    <View style={styles.card} key={item.id?.toString() || index.toString()}>
       {/* Post Header */}
       <View style={styles.postHeader}>
         <Image
@@ -111,7 +109,7 @@ export default function RoadIssues() {
         <FlatList
           data={issues}
           renderItem={renderIssue}
-          keyExtractor={(item) => item.id}
+          keyExtractor={(item, index) => item.id?.toString() || index.toString()}
           contentContainerStyle={styles.container}
           showsVerticalScrollIndicator={false}
         />
