@@ -80,6 +80,12 @@ export default function ReportNewIssue() {
       });
       const text1 = await model_output.text();
       console.log("📩 Raw server response:", text1);
+      let data1;
+      try {
+        data1 = JSON.parse(text1);
+      } catch (err) {
+        throw new Error("Server did not return JSON");
+      }
     }
     catch (error) {
       console.error("Model Error:", error);
@@ -87,10 +93,10 @@ export default function ReportNewIssue() {
     }
 
     let formData = new FormData();
-    formData.append("description", description);
+    formData.append("description", data1.description);
     formData.append("location", location);
     formData.append("citizenId", "12345"); // 🔹 Replace with actual logged-in user ID
-    formData.append("category", issueType);
+    formData.append("category", data1.prediction_label);
 
     formData.append("image", {
       uri: image,
