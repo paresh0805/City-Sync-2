@@ -78,7 +78,7 @@ export default function ReportNewIssue() {
         method: "POST",
         body: model_input
       });
-      const text1 = await model_output.text();
+      const text1 = await model_output.JSON();
       console.log("📩 Raw server response:", text1);
     }
     catch (error) {
