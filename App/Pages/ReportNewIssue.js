@@ -89,7 +89,7 @@ export default function ReportNewIssue() {
     let formData = new FormData();
     formData.append("description", description);
     formData.append("location", location);
-    formData.append("citizenId", "12345"); // 🔹 Replace with actual logged-in user ID
+    formData.append("citizenId", "68cf34cf1fce948129a190c6"); // 🔹 Replace with actual logged-in user ID
     formData.append("category", issueType);
 
     formData.append("image", {
